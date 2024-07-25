@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import { fillBoardInputsFn } from "../util/fillBoardInputsFn";
+import { createBoard } from "../lib/actions";
 
 export default function Board() {
   const { closeBoardModal } = useContext(ModalContext);
@@ -24,6 +25,19 @@ export default function Board() {
     }
   }, [editBoard]);
 
+  function deleteBoard() {
+    if (editBoard) {
+      isBoardChange(true);
+      setColumns([
+        { id: 1, prev: "", current: "" },
+        { id: 2, prev: "", current: "" },
+      ]);
+      setTitle("");
+      closeBoardModal();
+      localStorage.removeItem(editBoard);
+    }
+  }
+
   function changeHandler(e, id) {
     let inputId = e.target.id;
     let val = e.target.value;
@@ -42,9 +56,7 @@ export default function Board() {
     }
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-
+  function handleSubmit(event) {
     let storage = localStorage.getItem(editBoard || title);
 
     if (editBoard) {
@@ -144,29 +156,21 @@ export default function Board() {
     }
 
     isBoardChange(true);
-    setColumns([
+    /*setColumns([
       { id: 1, prev: "", current: "" },
       { id: 2, prev: "", current: "" },
     ]);
-    setTitle("");
+    setTitle("");*/
     closeBoardModal();
   }
 
-  function deleteBoard() {
-    if (editBoard) {
-      isBoardChange(true);
-      setColumns([
-        { id: 1, prev: "", current: "" },
-        { id: 2, prev: "", current: "" },
-      ]);
-      setTitle("");
-      closeBoardModal();
-      localStorage.removeItem(editBoard);
-    }
-  }
+  const createNewBoard = createBoard.bind(null, {
+    title: title,
+    columns: columns,
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={createNewBoard} onSubmit={handleSubmit}>
       <button
         type="reset"
         className="block ml-auto -mr-12 -mt-12 rounded-tr-lg"
