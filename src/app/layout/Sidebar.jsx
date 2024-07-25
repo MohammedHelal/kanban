@@ -51,6 +51,8 @@ function Sidebar() {
               <button
                 onClick={() => {
                   setCurrentBoard(boardName);
+                  let data = fetchBoardInfo(boardName);
+                  console.log(data);
                 }}
                 className="text-left border-0 rounded-r-full text-darkPurple hover:bg-darkPurple hover:text-white block w-[215px] py-2 pl-6 -ml-6 text-left"
               >

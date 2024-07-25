@@ -11,7 +11,7 @@ export async function fetchBoardInfo(boardName) {
     const data =
       await sql`SELECT * FROM boards WHERE board_name='${boardName}'`;
 
-    console.log(data, typeof data);
+    return data;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch board info.");
