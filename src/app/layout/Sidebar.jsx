@@ -8,33 +8,38 @@ import logo from "@/src/assets/logo-dark.svg";
 import show from "@/src/assets/icon-show-sidebar.svg";
 import hide from "@/src/assets/icon-hide-sidebar.svg";
 import board from "@/src/assets/icon-board.svg";
-import { fetchBoardInfo } from "@/src/lib/data";
 import Image from "next/image";
 
 import PropTypes from "prop-types";
 
-function Sidebar() {
+function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
   const { openBoardModal } = useContext(ModalContext);
-  const { isChanged, isBoardChange, setCurrentBoard, setEditBoard } =
-    useContext(BoardTaskContext);
+  const {
+    isChanged,
+    isBoardChange,
+    setCurrentBoard,
+    setBoardColumns,
+    setEditBoard,
+    setTasks,
+  } = useContext(BoardTaskContext);
   const { sidebar, hideSidebar, showSidebar } = useContext(SidebarContext);
 
   const [boards, setBoards] = useState([]);
 
   useEffect(() => {
-    let len = localStorage.length;
-    if (len > 0) {
-      let array = [];
-      for (let i = 0; i < len; i++) {
-        array.push(localStorage.key(i));
+    if (boardData) {
+      let arr = [];
+      let obj = {};
+      for (let i = 0; i < boardData.length; i++) {
+        let current = boardData[i];
+        if (!(current["board_name"] in obj)) {
+          obj[current["board_name"]] = 1;
+          arr.push(current["board_name"]);
+        }
       }
-      array.sort();
-      setBoards(array);
-      if (isChanged) isBoardChange(false);
-    } else {
-      setBoards([]);
+      setBoards(arr);
     }
-  }, [isChanged, isBoardChange]);
+  }, [boardData]);
 
   return (
     <aside
@@ -49,10 +54,13 @@ function Sidebar() {
           {boards.map((boardName, i) => (
             <div key={i} className="flex items-center ">
               <button
-                onClick={() => {
+                onClick={async () => {
+                  let columnsData = await fetchABoardsDetails(boardName);
+                  let taskData = await fetchTasksData(boardName);
+
                   setCurrentBoard(boardName);
-                  let data = fetchBoardInfo(boardName);
-                  console.log(data);
+                  setBoardColumns(columnsData);
+                  setTasks(taskData);
                 }}
                 className="text-left border-0 rounded-r-full text-darkPurple hover:bg-darkPurple hover:text-white block w-[215px] py-2 pl-6 -ml-6 text-left"
               >

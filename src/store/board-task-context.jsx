@@ -8,8 +8,12 @@ export const BoardTaskContext = createContext({
   isBoardChange: () => {},
   currentBoard: "",
   setCurrentBoard: () => {},
-  boardColumns: {},
+  boardColumns: [],
   setBoardColumns: () => {},
+  tasks: [],
+  setTasks: () => {},
+  subtasks: [],
+  setSubtasks: () => {},
   currentTask: {},
   setCurrentTask: () => {},
   editBoard: "",
@@ -23,53 +27,27 @@ export default function BoardTaskContextProvider({ children }) {
   const [isChanged, setIsChanged] = useState(false);
   // specifies the current board and the columns, tasks as well as the current selected task if any
   const [currentBoard, setCurrentBoard] = useState("");
-  const [boardColumns, setBoardColumns] = useState({});
+  const [boardColumns, setBoardColumns] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [subtasks, setSubtasks] = useState([]);
   const [currentTask, setCurrentTask] = useState({});
 
-  // used to track which board or task is going to be edited
   const [editBoard, setEditBoard] = useState("");
   const [editTask, setEditTask] = useState({});
 
-  useEffect(() => {
-    if (localStorage.length > 0) {
-      if (currentBoard !== "") {
-        let storage = JSON.parse(localStorage.getItem(currentBoard));
-
-        let obj = Object.keys(storage).reduce((o, key) => {
-          let someobj = JSON.parse(key);
-          let current = someobj.current;
-          o[current] = storage[key];
-          return o;
-        }, {});
-        setBoardColumns(obj);
-        console.log;
-        if (currentTask && Object.keys(currentTask).length > 0) {
-          let newTask = obj[currentTask.status].filter(
-            (e) => e.id === currentTask.id
-          );
-          setCurrentTask(newTask[0]);
-        }
-      }
-    } else {
-      setCurrentBoard("");
-      setBoardColumns({});
-      setCurrentTask({});
-    }
-  }, [currentBoard, isChanged]);
-
-  function isBoardChange(bool) {
-    setIsChanged(bool);
-  }
-
   const boardTaskCtx = {
     isChanged: isChanged,
-    isBoardChange: isBoardChange,
+    isBoardChange: setIsChanged,
     currentBoard: currentBoard,
     setCurrentBoard: setCurrentBoard,
     boardColumns: boardColumns,
     setBoardColumns: setBoardColumns,
     currentTask: currentTask,
     setCurrentTask: setCurrentTask,
+    tasks: tasks,
+    setTasks: setTasks,
+    subtasks: subtasks,
+    setSubtasks: setSubtasks,
     editBoard: editBoard,
     setEditBoard: setEditBoard,
     editTask: editTask,

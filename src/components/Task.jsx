@@ -3,6 +3,7 @@
 import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
+import { createTask } from "../lib/actions";
 
 function Task() {
   const { closeTaskModal } = useContext(ModalContext);
@@ -62,15 +63,16 @@ function Task() {
   }
 
   function submitHandler(e) {
-    e.preventDefault();
-    let columns = Object.keys(boardColumns);
+    console.log("what is happening right now??????");
+    //let columns = Object.keys(boardColumns);
     let task = {
       title: title,
       description: description,
       subtasks: subtasks,
-      status: status === "" ? columns[0] : status,
+      status: status === "" ? boardColumns[0] : status,
     };
 
+    /*
     let board = JSON.parse(localStorage.getItem(currentBoard));
 
     let regex = new RegExp(`${task.status}`);
@@ -108,6 +110,7 @@ function Task() {
     }
 
     localStorage.setItem(currentBoard, JSON.stringify(board));
+    */
 
     setTitle("");
     setDescription("");
@@ -121,8 +124,19 @@ function Task() {
     isBoardChange(true);
   }
 
+  const createNewTask = createTask.bind(
+    null,
+    {
+      title: title,
+      description: description,
+      subtasks: subtasks,
+      status: status === "" ? boardColumns[0] : status,
+    },
+    currentBoard
+  );
+
   return (
-    <form onSubmit={submitHandler}>
+    <form action={createNewTask} onSubmit={submitHandler}>
       <button
         type="reset"
         className="block ml-auto -mr-12 -mt-12"
@@ -247,9 +261,9 @@ function Task() {
           value={status}
           onChange={changeHandler}
         >
-          {Object.keys(boardColumns).map((e) => (
-            <option key={e} value={e}>
-              {e}
+          {boardColumns.map((column) => (
+            <option key={column["column_id"]} value={column["column_name"]}>
+              {column["column_name"]}
             </option>
           ))}
         </select>

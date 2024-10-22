@@ -1,16 +1,24 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import more from "../assets/icon-vertical-ellipsis.svg";
 
 import Image from "next/image";
 
-function TaskInfo() {
+function TaskInfo({
+  changeSubtasksStatus,
+  fetchSubTasksData,
+  changeTasksColumn,
+  fetchTasksData,
+}) {
   const { openTaskModal, closeTaskInfoModal } = useContext(ModalContext);
   const {
     currentTask: task = {},
+    setTasks,
+    subtasks,
+    setSubtasks,
     setCurrentTask,
     boardColumns,
     currentBoard,
@@ -19,67 +27,48 @@ function TaskInfo() {
   } = useContext(BoardTaskContext);
 
   const [dropDown, setDropDown] = useState(false);
+  const [taskColumn, setTaskColumn] = useState("");
 
-  function changeColumn(e) {
-    let column = e.target.value;
+  useEffect(() => {
+    if (boardColumns.length > 0) {
+      const columnName = boardColumns.find(
+        (column) => column["column_id"] === task["column_id"]
+      );
 
-    let board = JSON.parse(localStorage.getItem(currentBoard));
-    let boardKeys = Object.keys(board);
+      if (columnName && columnName["column_name"]) {
+        setTaskColumn(columnName["column_name"]);
+      }
+    }
+  }, [boardColumns, task]);
 
-    let regex1 = new RegExp(`${task.status}`);
-    let str1 = boardKeys.filter((e) => regex1.test(e))[0];
+  async function changeColumn(e, taskId) {
+    const value = e.target.value;
+    const columnId = boardColumns.find(
+      (column) => column["column_name"] === value
+    )["column_id"];
 
-    let firstTaskArray = board[str1].filter((e) => e.title !== task.title);
-    board[str1] = firstTaskArray;
+    changeTasksColumn(columnId, taskId);
 
-    let regex2 = new RegExp(`${column}`);
-    let str2 = boardKeys.filter((e) => regex2.test(e))[0];
-    task.status = column;
+    const tasks = await fetchTasksData(currentBoard);
+    setTasks(tasks);
 
-    //changing the id of the tasks as the changes
-    let secondTaskArray = board[str2];
-    if (secondTaskArray.length > 0) {
-      let id = secondTaskArray[secondTaskArray.length - 1].id;
-      let idnum = parseInt(/\d$/.exec(id[id.length - 1]), 10);
-      task.id = `${task.status},task${idnum + 1}`;
-    } else task.id = `${task.status},task1`;
+    const currentTask = tasks.find((task) => task["task_id"] === taskId);
 
-    board[str2].push(task);
-
-    localStorage.setItem(currentBoard, JSON.stringify(board));
+    setCurrentTask(currentTask);
     isBoardChange(true);
   }
 
-  function changeSubtaskStatus(index) {
-    let board = JSON.parse(localStorage.getItem(currentBoard));
+  async function changeSubtaskStatus(statusId, status, taskId) {
+    let subtaskStatus = status === "pending" ? "done" : "pending";
+    changeSubtasksStatus(statusId, subtaskStatus);
 
-    let regex1 = new RegExp(`${task.status}`);
-    let str = Object.keys(board).filter((e) => regex1.test(e))[0];
+    let subtasks = await fetchSubTasksData(taskId);
+    setSubtasks(subtasks);
 
-    let currentTask = board[str].filter((e) => {
-      if (e.title === task.title) {
-        let subtask = e.subtasks[index];
-        if (subtask.status === "pending") subtask.status = "done";
-        else subtask.status = "pending";
-      }
-      return e;
-    });
-
-    board[str] = currentTask;
-    localStorage.setItem(currentBoard, JSON.stringify(board));
     isBoardChange(true);
   }
 
   function deleteTask() {
-    let board = JSON.parse(localStorage.getItem(currentBoard));
-
-    let regex1 = new RegExp(`${task.status}`);
-    let str = Object.keys(board).filter((e) => regex1.test(e))[0];
-
-    let arr = board[str].filter((e) => e.id !== task.id);
-    board[str] = arr;
-
-    localStorage.setItem(currentBoard, JSON.stringify(board));
     isBoardChange(true);
     closeTaskInfoModal();
   }
@@ -97,7 +86,7 @@ function TaskInfo() {
         <i className="fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
       <div className="flex justify-between items-center">
-        <h1>{task.title}</h1>
+        <h1>{task["task_title"]}</h1>
         <Image
           src={more}
           className="h-[20px] cursor-pointer"
@@ -136,27 +125,37 @@ function TaskInfo() {
         )}
       </div>
       <p className="text-wrap text-platinum">{task.description}</p>
-      {task.subtasks && (
+      {subtasks && (
         <form className="my-6">
           <p className="text-platinum my-3 font-semibold">
-            Subtasks (0 of {task.subtasks.length})
+            Subtasks ({task["no_of_completed_subtasks"]} of{" "}
+            {task["no_of_subtasks"]})
           </p>
-          {task.subtasks.map((e, i) => (
-            <div key={i} className="py-1 px-3 my-2 bg-greyBlue text-wrap">
+          {subtasks.map((subtask, i) => (
+            <div
+              key={subtask["subtask_id"]}
+              className="py-1 px-3 my-2 bg-greyBlue text-wrap"
+            >
               <input
                 type="checkbox"
-                id={`subtask${i}`}
-                name={`subtask${i}`}
-                onChange={() => changeSubtaskStatus(i)}
-                checked={e.status === "done"}
+                id={`subtask["subtask_id"]`}
+                name={`subtask["subtask_id"]`}
+                onChange={() =>
+                  changeSubtaskStatus(
+                    subtask["subtask_id"],
+                    subtask.status,
+                    task["task_id"]
+                  )
+                }
+                checked={subtask.status === "done"}
               />
               <label
-                htmlFor={`subtask${i}`}
+                htmlFor={`subtask["subtask_id"]`}
                 className={`ml-3 ${
-                  e.status === "done" && "line-through text-platinum"
+                  subtask.status === "done" && "line-through text-platinum"
                 }`}
               >
-                {e.current}
+                {subtask["subtask_title"]}
               </label>
             </div>
           ))}
@@ -167,12 +166,12 @@ function TaskInfo() {
         id="status"
         name="status"
         className="w-full bg-inherit border-2 rounded-sm p-3 px-4"
-        value={task.status}
-        onChange={changeColumn}
+        value={taskColumn}
+        onChange={(e) => changeColumn(e, task["task_id"])}
       >
-        {Object.keys(boardColumns).map((e) => (
-          <option key={e} value={e}>
-            {e}
+        {boardColumns.map((column) => (
+          <option key={column["column_id"]} value={column["column_name"]}>
+            {column["column_name"]}
           </option>
         ))}
       </select>

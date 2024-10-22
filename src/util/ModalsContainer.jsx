@@ -7,7 +7,12 @@ import Board from "../components/Board";
 import Task from "../components/Task";
 import TaskInfo from "../components/TaskInfo";
 
-function ModalsContainer() {
+function ModalsContainer({
+  changeSubtasksStatus,
+  fetchSubTasksData,
+  changeTasksColumn,
+  fetchTasksData,
+}) {
   const { boardModal, taskModal, taskInfoModal } = useContext(ModalContext);
 
   return (
@@ -19,7 +24,12 @@ function ModalsContainer() {
         <Task />
       </Modal>
       <Modal open={taskInfoModal} className="rounded-lg">
-        <TaskInfo />
+        <TaskInfo
+          changeSubtasksStatus={changeSubtasksStatus}
+          fetchSubTasksData={fetchSubTasksData}
+          changeTasksColumn={changeTasksColumn}
+          fetchTasksData={fetchTasksData}
+        />
       </Modal>
     </>
   );

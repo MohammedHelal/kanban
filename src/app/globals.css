@@ -8,6 +8,16 @@
   box-sizing: border-box;
 }
 
+select,
+option {
+  font-family: "Plus Jakarta Sans", system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 23px;
+  color: var(--color-black);
+}
+
 :root {
   font-family: "Plus Jakarta Sans", system-ui, Avenir, Helvetica, Arial,
     sans-serif;

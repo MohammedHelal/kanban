@@ -56,7 +56,7 @@ export default function Board() {
     }
   }
 
-  function handleSubmit(event) {
+  function handleSubmit() {
     let storage = localStorage.getItem(editBoard || title);
 
     if (editBoard) {

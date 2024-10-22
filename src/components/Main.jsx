@@ -1,13 +1,14 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import { SidebarContext } from "../store/sidebar-context";
 
-function Main() {
+function Main({ fetchSubTasksData }) {
   const { openTaskInfoModal, openBoardModal } = useContext(ModalContext);
-  const { boardColumns, setCurrentTask } = useContext(BoardTaskContext);
+  const { tasks, setSubtasks, boardColumns, setCurrentTask } =
+    useContext(BoardTaskContext);
   const { sidebar } = useContext(SidebarContext);
 
   const colorNo = [
@@ -23,13 +24,11 @@ function Main() {
         sidebar ? "w-[calc(100vw - 300px)]" : "w-full"
       }`}
     >
-      {Object.keys(boardColumns).length > 0 &&
-        Object.keys(boardColumns).map((e, i) => {
-          let array = boardColumns[e];
-
+      {boardColumns.length > 0 &&
+        boardColumns.map((column, i) => {
           return (
             <div
-              key={i}
+              key={column["column_id"]}
               className="w-[280px] h-[200vh] mr-12 shrink-0 text-center"
             >
               <div className="flex items-center">
@@ -39,35 +38,41 @@ function Main() {
                   }`}
                 ></div>
                 <h4 className="text-left text-[#5d5e75] uppercase tracking-[0.25em] text-base">
-                  <span>
-                    {e} ({array.length})
-                  </span>
+                  <span>{column["column_name"]} (0)</span>
                 </h4>
               </div>
-              {array.length > 0 &&
-                array.map((e) => (
-                  <div
-                    key={e.id}
-                    className="bg-white w-full border-0 rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
-                    onClick={() => {
-                      setCurrentTask(e);
-                      openTaskInfoModal();
-                    }}
-                  >
-                    <h2 className="text-left mb-2 text-wrap">{e["title"]}</h2>
-                    <p className="text-left font-bold text-platinum mb-3.5">
-                      {e["subtasks"].reduce((acc, cv) => {
-                        if (cv.status === "done") acc++;
-                        return acc;
-                      }, 0)}{" "}
-                      of {e["subtasks"].length} Subtasks
-                    </p>
-                  </div>
-                ))}
+              {tasks.length > 0 &&
+                tasks.map((task) => {
+                  if (task["column_id"] === column["column_id"]) {
+                    return (
+                      <div
+                        key={task["task_id"]}
+                        className="bg-white w-full border-0 rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
+                        onClick={async () => {
+                          let subtasks = await fetchSubTasksData(
+                            task["task_id"]
+                          );
+
+                          setCurrentTask(task);
+                          setSubtasks(subtasks);
+                          openTaskInfoModal();
+                        }}
+                      >
+                        <h2 className="text-left mb-2 text-wrap">
+                          {task["task_title"]}
+                        </h2>
+                        <p className="text-left font-bold text-platinum mb-3.5">
+                          {task["no_of_completed_subtasks"]} of{" "}
+                          {task["no_of_subtasks"]} Subtasks
+                        </p>
+                      </div>
+                    );
+                  }
+                })}
             </div>
           );
         })}
-      {Object.keys(boardColumns).length > 0 && (
+      {boardColumns.length > 0 && (
         <div
           onClick={() => openBoardModal()}
           className="w-[280px] h-[200vh] shrink-0 mr-6 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
