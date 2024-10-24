@@ -105,7 +105,7 @@ function Task({ fetchTasksData }) {
         if (task.subtasks[i].status === "done") completeNo++;
       }
       task.completeNo = completeNo;
-
+      task.id = editTask["task_id"];
       updateTask(task);
     }
 
