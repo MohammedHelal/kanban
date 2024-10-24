@@ -37,7 +37,7 @@ export async function fetchTaskData(boardName) {
 export async function fetchSubTaskData(taskId) {
   try {
     const subtaskData =
-      await sql`SELECT * FROM subtasks WHERE task_id=${taskId}`;
+      await sql`SELECT * FROM subtasks WHERE task_id=${taskId} ORDER BY subtask_id ASC`;
 
     return subtaskData.rows;
   } catch (error) {

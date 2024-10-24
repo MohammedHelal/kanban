@@ -62,8 +62,12 @@ function TaskInfo({
     let subtaskStatus = status === "pending" ? "done" : "pending";
     changeSubtasksStatus(statusId, subtaskStatus);
 
-    let subtasks = await fetchSubTasksData(taskId);
-    setSubtasks(subtasks);
+    console.log(subtasks);
+
+    let subtasksData = await fetchSubTasksData(taskId);
+    console.log(subtasksData);
+
+    setSubtasks(subtasksData);
 
     isBoardChange(true);
   }
@@ -131,7 +135,7 @@ function TaskInfo({
             Subtasks ({task["no_of_completed_subtasks"]} of{" "}
             {task["no_of_subtasks"]})
           </p>
-          {subtasks.map((subtask, i) => (
+          {subtasks.map((subtask) => (
             <div
               key={subtask["subtask_id"]}
               className="py-1 px-3 my-2 bg-greyBlue text-wrap"

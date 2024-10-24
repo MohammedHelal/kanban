@@ -3,12 +3,19 @@
 import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
-import { createTask } from "../lib/actions";
+import { createTask, updateTask } from "../lib/actions";
 
-function Task() {
-  const { closeTaskModal } = useContext(ModalContext);
-  const { currentBoard, boardColumns, isBoardChange, editTask, setEditTask } =
-    useContext(BoardTaskContext);
+function Task({ fetchTasksData }) {
+  const { closeTaskModal, closeTaskInfoModal } = useContext(ModalContext);
+  const {
+    currentBoard,
+    boardColumns,
+    isBoardChange,
+    editTask,
+    setTasks,
+    subtasks,
+    setEditTask,
+  } = useContext(BoardTaskContext);
 
   //state for the deletion/removal of subtask input
   const [subtaskDelete, setSubtaskDelete] = useState("");
@@ -16,29 +23,39 @@ function Task() {
   //state for the value of the form inputs
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [subtasks, setSubtasks] = useState([
-    { id: 1, prev: "", current: "", status: "pending" },
-    { id: 2, prev: "", current: "", status: "pending" },
+  const [subtaskState, setSubtaskState] = useState([
+    {
+      subtask_id: 1,
+      subtask_title: "",
+      status: "pending",
+      task_id: editTask["task_id"] || "",
+    },
+    {
+      subtask_id: 2,
+      subtask_title: "",
+      status: "pending",
+      task_id: editTask["task_id"] || "",
+    },
   ]);
   const [status, setStatus] = useState("");
 
   useEffect(() => {
     //console.log(editTask);
-    if (Object.keys(editTask).length > 0) {
+    if (editTask["task_id"]) {
       //copying the task object to prevent any unintended changes to the editTask or the currentTask states
       let transferObj = { ...editTask };
-      setTitle(transferObj.title);
+      setTitle(transferObj["task_title"]);
       setDescription(transferObj.description);
 
       //recursively copying the subtask array to prevent any unintended changes to the editTask or the currentTask states
       let array = [];
-      for (let i = 0; i < transferObj.subtasks.length; i++) {
-        array.push({ ...transferObj.subtasks[i] });
+      for (let i = 0; i < subtasks.length; i++) {
+        array.push({ ...subtasks[i] });
       }
-      setSubtasks(array);
+      setSubtaskState(array);
       setStatus(transferObj.status);
     }
-  }, [editTask]);
+  }, [editTask, subtasks]);
 
   function changeHandler(e, id) {
     let inputId = e.target.id;
@@ -51,108 +68,102 @@ function Task() {
     } else if (inputId === "status") {
       setStatus(val);
     } else {
-      let array = subtasks.map((input) => {
-        if (input.id === id) {
-          input.current = val;
+      let array = subtaskState.map((input) => {
+        if (input["subtask_id"] === id) {
+          input["subtask_title"] = val;
         }
         return input;
       });
 
-      setSubtasks(array);
+      setSubtaskState(array);
     }
   }
 
-  function submitHandler(e) {
-    console.log("what is happening right now??????");
-    //let columns = Object.keys(boardColumns);
+  async function submitHandler(e) {
+    e.preventDefault();
+
+    const columnId = status
+      ? boardColumns.filter((column) => column["column_name"] === status)[0][
+          "column_id"
+        ]
+      : Object.keys(editTask).length <= 0
+      ? boardColumns[0]["column_id"]
+      : editTask["column_id"];
+
     let task = {
       title: title,
       description: description,
-      subtasks: subtasks,
-      status: status === "" ? boardColumns[0] : status,
+      subtasks: subtaskState,
+      columnId: columnId,
     };
 
-    /*
-    let board = JSON.parse(localStorage.getItem(currentBoard));
-
-    let regex = new RegExp(`${task.status}`);
-    let str = Object.keys(board).filter((e) => regex.test(e))[0];
-
-    let array = board[str];
-
-    if (Object.keys(editTask).length > 0) {
-      task.id = editTask.id;
-
-      board[str] = array.map((element) => {
-        if (element.id === task.id) {
-          return task;
-        }
-        return element;
-      });
+    if (Object.keys(editTask).length <= 0) {
+      createTask(task, currentBoard);
     } else {
-      if (board[str].length > 0) {
-        let id = array[array.length - 1].id;
-        let idnum = parseInt(/\d$/.exec(id[id.length - 1]), 10);
-        task.id = `${task.status},task${idnum + 1}`;
-      } else task.id = `${task.status},task1`;
-
-      //checking for duplicate title
-      let duplicateTitleCheck = board[str].filter(
-        (task) => task.title === title
-      ).length;
-
-      if (duplicateTitleCheck > 0) {
-        console.error("Title already exists la!");
-        return;
+      let completeNo = 0;
+      for (let i = 0; i < task.subtasks.length; i++) {
+        if (task.subtasks[i].status === "done") completeNo++;
       }
-      //pushing task to board
-      board[str].push(task);
+      task.completeNo = completeNo;
+
+      updateTask(task);
     }
 
-    localStorage.setItem(currentBoard, JSON.stringify(board));
-    */
+    let taskData = await fetchTasksData(currentBoard);
+    setTasks(taskData);
 
     setTitle("");
     setDescription("");
-    setSubtasks([
-      { id: 1, prev: "", current: "", status: "pending" },
-      { id: 2, prev: "", current: "", status: "pending" },
+    setSubtaskState([
+      {
+        subtask_id: 1,
+        subtask_title: "",
+        status: "pending",
+        task_id: editTask["task_id"] || "",
+      },
+      {
+        subtask_id: 2,
+        subtask_title: "",
+        status: "pending",
+        task_id: editTask["task_id"] || "",
+      },
     ]);
+
     setStatus("");
     setEditTask({});
     closeTaskModal();
+    closeTaskInfoModal();
     isBoardChange(true);
   }
 
-  const createNewTask = createTask.bind(
-    null,
-    {
-      title: title,
-      description: description,
-      subtasks: subtasks,
-      status: status === "" ? boardColumns[0] : status,
-    },
-    currentBoard
-  );
-
   return (
-    <form action={createNewTask} onSubmit={submitHandler}>
+    <form onSubmit={submitHandler}>
       <button
         type="reset"
         className="block ml-auto -mr-12 -mt-12"
         onClick={() => {
           setTitle("");
           setDescription("");
-          setSubtasks([
-            { id: 1, prev: "", current: "", status: "pending" },
-            { id: 2, prev: "", current: "", status: "pending" },
+          setSubtaskState([
+            {
+              subtask_id: 1,
+              subtask_title: "",
+              status: "pending",
+              task_id: editTask["task_id"] || "",
+            },
+            {
+              subtask_id: 2,
+              subtask_title: "",
+              status: "pending",
+              task_id: editTask["task_id"] || "",
+            },
           ]);
           setStatus("");
           setEditTask({});
           closeTaskModal();
         }}
       >
-        <i className="fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
+        <i className="task-close fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
       <h2 className="mt-0 mb-8">Add New Task</h2>
       <fieldset className="my-6">
@@ -184,13 +195,13 @@ function Task() {
       </fieldset>
       <fieldset className="my-6">
         <label className="block text-[#4f6492] -mb-3">Subtasks</label>
-        {subtasks.map((input, i) => {
-          if (!/delete/.exec(input.current))
+        {subtaskState.map((input, i) => {
+          if (!/delete/.exec(input["subtask_title"])) {
             return (
-              <div key={input.id} className="flex my-3">
+              <div key={input["subtask_id"]} className="flex my-3">
                 <input
-                  id={`subtask${input.id}`}
-                  name={`subtask${input.id}`}
+                  id={`subtask${input["subtask_id"]}`}
+                  name={`subtask${input["subtask_id"]}`}
                   placeholder={`${
                     i == 0
                       ? "eg. Make coffee"
@@ -199,48 +210,51 @@ function Task() {
                       : "Next subtask..."
                   }`}
                   className={`w-full border-2 ${
-                    subtaskDelete === `subtask${input.id}` && "border-orange"
+                    subtaskDelete === `subtask${input["subtask_id"]}` &&
+                    "border-orange"
                   } p-1 pl-3 rounded-l-lg`}
-                  value={input.current}
-                  onChange={(e) => changeHandler(e, input.id)}
+                  value={input["subtask_title"]}
+                  onChange={(e) => changeHandler(e, input["subtask_id"])}
                 />
                 <i
                   className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 border-2 rounded-r-lg hover:border-orange text-[#4f6492] hover:bg-orange hover:text-white cursor-pointer"
                   onClick={() => {
-                    if (subtasks.length > 1) {
-                      let array = [...subtasks];
-                      if (editTask) {
+                    if (subtaskState.length > 1) {
+                      let array = [...subtaskState];
+                      if (editTask["task_id"]) {
                         let currentInput = array[i];
-                        if (currentInput.current !== "") {
-                          currentInput.current += "delete";
+                        if (currentInput["subtask_title"] !== "") {
+                          currentInput["subtask_title"] += "delete";
                         }
-                        setSubtasks(array);
+                        setSubtaskState(array);
                       } else {
                         let columnsArray = array.filter(
-                          (e) => e.id != input.id
+                          (e) => e["subtask_id"] != input["subtask_id"]
                         );
-                        setSubtasks(columnsArray);
+                        setSubtaskState(columnsArray);
                       }
                     }
                   }}
                   onMouseEnter={() => {
-                    setSubtaskDelete(`subtask${input.id}`);
+                    setSubtaskDelete(`subtask${input["subtask_id"]}`);
                   }}
                   onMouseLeave={() => setSubtaskDelete("")}
                 ></i>
               </div>
             );
+          }
         })}
         <button
           className="btn-secondary mt-6 ml-auto block w-full"
           onClick={() => {
             if (subtasks.length < 12) {
-              setSubtasks((prevState) => [
+              setSubtaskState((prevState) => [
                 ...prevState,
                 {
-                  id: prevState[prevState.length - 1].id + 1,
-                  prev: "",
-                  current: "",
+                  subtask_id: prevState[prevState.length - 1]["subtask_id"] + 1,
+                  subtask_title: "",
+                  status: "pending",
+                  task_id: editTask["task_id"] || "",
                 },
               ]);
             }

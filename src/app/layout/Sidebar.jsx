@@ -69,9 +69,14 @@ function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
               </button>
               <i
                 className="fa-solid fa-pen-to-square ml-auto p-3 rounded-full text-darkPurple hover:bg-darkPurple hover:text-white cursor-pointer"
-                onClick={() => {
+                onClick={async () => {
+                  let columnsData = await fetchABoardsDetails(boardName);
+
                   openBoardModal();
-                  setEditBoard(boardName);
+                  setEditBoard({
+                    board: boardName,
+                    columns: columnsData,
+                  });
                 }}
               ></i>
             </div>

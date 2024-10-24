@@ -16,7 +16,7 @@ export const BoardTaskContext = createContext({
   setSubtasks: () => {},
   currentTask: {},
   setCurrentTask: () => {},
-  editBoard: "",
+  editBoard: {},
   setEditBoard: () => {},
   editTask: {},
   setEditTask: () => {},
@@ -32,7 +32,7 @@ export default function BoardTaskContextProvider({ children }) {
   const [subtasks, setSubtasks] = useState([]);
   const [currentTask, setCurrentTask] = useState({});
 
-  const [editBoard, setEditBoard] = useState("");
+  const [editBoard, setEditBoard] = useState({});
   const [editTask, setEditTask] = useState({});
 
   const boardTaskCtx = {

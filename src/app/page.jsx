@@ -22,6 +22,7 @@ export default async function Home() {
         fetchSubTasksData={fetchSubTasksData}
         changeTasksColumn={changeTasksColumn}
         fetchTasksData={fetchTasksData}
+        fetchABoardsDetails={fetchABoardsDetails}
       />
       <MainContainer>
         <Sidebar
