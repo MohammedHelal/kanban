@@ -3,13 +3,23 @@
 import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
-import { fillBoardInputsFn } from "../util/fillBoardInputsFn";
-import { createBoard } from "../lib/actions";
+import { createBoard, updateBoard, deleteBoard } from "../lib/actions";
 
-export default function Board({ fetchABoardsDetails }) {
+export default function Board({
+  fetchABoardsDetails,
+  fetchTasksOfColumnData,
+  fetchTasksData,
+}) {
   const { closeBoardModal } = useContext(ModalContext);
-  const { isBoardChange, editBoard, setEditBoard } =
-    useContext(BoardTaskContext);
+  const {
+    currentBoard,
+    isBoardChange,
+    editBoard,
+    setEditBoard,
+    setCurrentBoard,
+    setBoardColumns,
+    setTasks,
+  } = useContext(BoardTaskContext);
 
   const [title, setTitle] = useState("");
   const [columns, setColumns] = useState([
@@ -18,34 +28,35 @@ export default function Board({ fetchABoardsDetails }) {
   ]);
 
   const [columnDelete, setColumnDelete] = useState("");
+  const [cantDeleteColumnError, setCantDeleteColumnError] = useState(false);
+
+  useEffect(() => {
+    let timer1 =
+      cantDeleteColumnError &&
+      setTimeout(() => setCantDeleteColumnError(false), 3000);
+
+    return () => {
+      clearTimeout(timer1);
+    };
+  });
 
   useEffect(() => {
     if (editBoard.board) {
-      console.log(editBoard);
       setTitle(editBoard.board);
       let array = [];
       for (let i = 0; i < editBoard.columns.length; i++) {
         let columnObj = {
-          id: i + 1,
-          columnName: editBoard.columns["column_name"],
+          id: editBoard.columns[i]["column_id"],
+          columnName: editBoard.columns[i]["column_name"],
         };
         array.push(columnObj);
       }
-
       setColumns(array);
     }
   }, [editBoard]);
 
-  function deleteBoard() {
-    if (editBoard) {
-      isBoardChange(true);
-      setColumns([
-        { id: 1, columnName: "" },
-        { id: 2, columnName: "" },
-      ]);
-      setTitle("");
-      closeBoardModal();
-    }
+  function deleteBoardHandler() {
+    deleteBoard(title);
   }
 
   function changeHandler(e, id) {
@@ -66,13 +77,29 @@ export default function Board({ fetchABoardsDetails }) {
     }
   }
 
-  function handleSubmit() {
-    if (editBoard.board === "") {
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (editBoard.board) {
+      updateBoard({
+        title: title,
+        columns: columns,
+      });
+
+      if (currentBoard === editBoard.board) {
+        (async () => {
+          let columnsData = await fetchABoardsDetails(editBoard.board);
+          let taskData = await fetchTasksData(editBoard.board);
+
+          setBoardColumns(columnsData);
+          setTasks(taskData);
+        })();
+      }
+    } else {
       createBoard({
         title: title,
         columns: columns,
       });
-    } else {
     }
     setColumns([
       { id: 1, columnName: "" },
@@ -119,6 +146,11 @@ export default function Board({ fetchABoardsDetails }) {
       </div>
       <div className="mb-6">
         <label className="block text-[#4f6492]">Columns</label>
+        {cantDeleteColumnError && (
+          <p className="py-2 px-3 bg-orange text-white rounded-lg">
+            This column contains tasks and so it can&apos;t be deleted
+          </p>
+        )}
         {columns.map((input, i) => {
           if (!/delete/.exec(input.columnName))
             return (
@@ -143,15 +175,20 @@ export default function Board({ fetchABoardsDetails }) {
                 />
                 <i
                   className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 border-2 rounded-r-lg text-[#4f6492] hover:bg-orange hover:text-white hover:border-orange cursor-pointer"
-                  onClick={() => {
+                  onClick={async () => {
                     if (columns.length > 1) {
                       let array = [...columns];
-                      if (editBoard) {
-                        let currentInput = array[i];
-                        if (currentInput.columnName !== "") {
-                          currentInput.columnName += "delete";
+                      if (editBoard.board) {
+                        let tasksData = await fetchTasksOfColumnData(input.id);
+                        if (tasksData.length <= 0) {
+                          let currentInput = array[i];
+                          if (currentInput.columnName !== "") {
+                            currentInput.columnName += "delete";
+                          }
+                          setColumns(array);
+                        } else {
+                          setCantDeleteColumnError(true);
                         }
-                        setColumns(array);
                       } else {
                         let columnsArray = array.filter(
                           (e) => e.id != input.id
@@ -175,7 +212,7 @@ export default function Board({ fetchABoardsDetails }) {
               setColumns((prevState) => [
                 ...prevState,
                 {
-                  id: prevState[prevState.length - 1].id + 1,
+                  id: prevState[prevState.length - 1].id + 1 + "new",
                   columnName: "",
                 },
               ]);
@@ -188,23 +225,23 @@ export default function Board({ fetchABoardsDetails }) {
       </div>
       <div
         className={`${
-          editBoard && "w-full flex justify-between items-center mt-6"
+          editBoard.board && "w-full flex justify-between items-center mt-6"
         }`}
       >
-        {editBoard && (
+        {editBoard.board && (
           <button
             className="btn-destructive"
             type="button"
-            onClick={deleteBoard}
+            onClick={deleteBoardHandler}
           >
             Delete Board
           </button>
         )}
         <button
-          className={`btn-primary ${!editBoard && "w-full"}`}
+          className={`btn-primary ${!editBoard.board && "w-full"}`}
           type="submit"
         >
-          {editBoard ? "Save Changes" : "Create New Board"}
+          {editBoard.board ? "Save Changes" : "Create New Board"}
         </button>
       </div>
     </form>

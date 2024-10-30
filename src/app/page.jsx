@@ -7,12 +7,13 @@ import {
   fetchBoardDetails,
   fetchBoardsData,
   fetchTaskData,
+  fetchTaskOfColumnData,
   fetchSubTaskData,
 } from "../lib/data";
 import { changeSubtaskStatus, changetaskColumn } from "../lib/actions";
 
 export default async function Home() {
-  const boardData = await fetchBoardsData();
+  const boardData = await fetchBoardData();
 
   return (
     <>
@@ -22,6 +23,7 @@ export default async function Home() {
         fetchSubTasksData={fetchSubTasksData}
         changeTasksColumn={changeTasksColumn}
         fetchTasksData={fetchTasksData}
+        fetchTasksOfColumnData={fetchTasksOfColumnData}
         fetchABoardsDetails={fetchABoardsDetails}
       />
       <MainContainer>
@@ -34,6 +36,13 @@ export default async function Home() {
       </MainContainer>
     </>
   );
+}
+
+async function fetchBoardData() {
+  "use server";
+
+  let data = await fetchBoardsData();
+  return data;
 }
 
 async function fetchABoardsDetails(boardName) {
@@ -50,6 +59,13 @@ async function fetchTasksData(boardName) {
   return data;
 }
 
+async function fetchTasksOfColumnData(columnId) {
+  "use server";
+
+  let data = await fetchTaskOfColumnData(columnId);
+  return data;
+}
+
 async function fetchSubTasksData(taskId) {
   "use server";
 
@@ -57,9 +73,9 @@ async function fetchSubTasksData(taskId) {
   return data;
 }
 
-async function changeSubtasksStatus(id, status) {
+async function changeSubtasksStatus(id, status, taskId) {
   "use server";
-  await changeSubtaskStatus(id, status);
+  await changeSubtaskStatus(id, status, taskId);
 }
 
 async function changeTasksColumn(columnId, taskId) {

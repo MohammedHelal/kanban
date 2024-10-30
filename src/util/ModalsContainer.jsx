@@ -12,6 +12,7 @@ function ModalsContainer({
   fetchSubTasksData,
   changeTasksColumn,
   fetchTasksData,
+  fetchTasksOfColumnData,
   fetchABoardsDetails,
 }) {
   const { boardModal, taskModal, taskInfoModal } = useContext(ModalContext);
@@ -22,7 +23,11 @@ function ModalsContainer({
         open={boardModal}
         className="p-12 pb-8 w-[480px] rounded-lg border-2 has-[.board-close:hover]:border-orange"
       >
-        <Board fetchABoardsDetails={fetchABoardsDetails} />
+        <Board
+          fetchABoardsDetails={fetchABoardsDetails}
+          fetchTasksOfColumnData={fetchTasksOfColumnData}
+          fetchTasksData={fetchTasksData}
+        />
       </Modal>
       <Modal
         open={taskModal}

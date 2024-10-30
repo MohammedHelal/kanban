@@ -60,14 +60,13 @@ function TaskInfo({
 
   async function changeSubtaskStatus(statusId, status, taskId) {
     let subtaskStatus = status === "pending" ? "done" : "pending";
-    changeSubtasksStatus(statusId, subtaskStatus);
-
-    console.log(subtasks);
+    changeSubtasksStatus(statusId, subtaskStatus, taskId);
 
     let subtasksData = await fetchSubTasksData(taskId);
-    console.log(subtasksData);
-
     setSubtasks(subtasksData);
+
+    const tasks = await fetchTasksData(currentBoard);
+    setTasks(tasks);
 
     isBoardChange(true);
   }
@@ -97,7 +96,6 @@ function TaskInfo({
           alt="drop down menu"
           onClick={() => setDropDown((prevState) => !prevState)}
         />
-
         {dropDown && (
           <>
             <div
@@ -144,13 +142,13 @@ function TaskInfo({
                 type="checkbox"
                 id={`subtask["subtask_id"]`}
                 name={`subtask["subtask_id"]`}
-                onChange={() =>
+                onChange={() => {
                   changeSubtaskStatus(
                     subtask["subtask_id"],
                     subtask.status,
                     task["task_id"]
-                  )
-                }
+                  );
+                }}
                 checked={subtask.status === "done"}
               />
               <label

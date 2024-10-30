@@ -1,8 +1,10 @@
 import { sql } from "@vercel/postgres";
+import { revalidatePath } from "next/cache";
 
 export async function fetchBoardsData() {
   try {
     const boardData = await sql`SELECT * FROM boards`;
+
     return boardData.rows;
   } catch (error) {
     console.error("Database Error:", error);
@@ -18,7 +20,7 @@ export async function fetchBoardDetails(boardName) {
     return boardDetailData.rows;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch board info.");
+    throw new Error("Failed to fetch board details.");
   }
 }
 
@@ -30,7 +32,18 @@ export async function fetchTaskData(boardName) {
     return taskData.rows;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch board info.");
+    throw new Error("Failed to fetch task info.");
+  }
+}
+
+export async function fetchTaskOfColumnData(columnId) {
+  try {
+    const taskData = await sql`SELECT * FROM tasks WHERE column_id=${columnId}`;
+
+    return taskData.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch task info.");
   }
 }
 
@@ -42,6 +55,6 @@ export async function fetchSubTaskData(taskId) {
     return subtaskData.rows;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch board info.");
+    throw new Error("Failed to fetch subtask info.");
   }
 }

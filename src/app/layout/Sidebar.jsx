@@ -32,6 +32,7 @@ function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
       let obj = {};
       for (let i = 0; i < boardData.length; i++) {
         let current = boardData[i];
+
         if (!(current["board_name"] in obj)) {
           obj[current["board_name"]] = 1;
           arr.push(current["board_name"]);

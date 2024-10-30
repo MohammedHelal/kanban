@@ -1,9 +1,12 @@
 "use server";
 import { sql } from "@vercel/postgres";
+import { revalidatePath } from "next/cache";
 
 export async function createBoard(board) {
   const title = board.title;
   const columns = board.columns;
+  console.log(columns);
+
   try {
     for (let i = 0; i < columns.length; i++) {
       if (columns[i].columnName) {
@@ -13,6 +16,7 @@ export async function createBoard(board) {
       `;
       }
     }
+    revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create board.", error);
@@ -25,13 +29,40 @@ export async function updateBoard(board) {
   const columns = board.columns;
   try {
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].columnName) {
+      if (/new/.exec(columns[i].id)) {
         await sql`
         INSERT INTO boards (column_name, board_name)
         VALUES (${columns[i].columnName}, ${title})
       `;
+      } else if (
+        columns[i].columnName &&
+        !/delete/.exec(columns[i].columnName)
+      ) {
+        await sql`
+          UPDATE boards
+          SET column_name=${columns[i].columnName}, 
+              board_name=${title}
+          WHERE column_id=${columns[i].id}
+        `;
+      } else if (/delete/.exec(columns[i].columnName)) {
+        await sql`
+          DELETE FROM boards
+          WHERE column_id=${columns[i].id}
+        `;
       }
     }
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create board.", error);
+  }
+}
+
+export async function deleteBoard(boardName) {
+  try {
+    console.log(boardName);
+    await sql`DELETE FROM boards WHERE board_name=${boardName}`;
+    revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create board.", error);
@@ -57,6 +88,7 @@ export async function createTask(task, boardName) {
         `;
       }
     }
+    revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create task.", error);
@@ -94,16 +126,28 @@ export async function updateTask(task) {
         `;
       }
     }
+    revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task", error);
   }
 }
 
-export async function changeSubtaskStatus(subtaskId, subtaskStatus) {
+export async function changeSubtaskStatus(subtaskId, subtaskStatus, taskId) {
   try {
     await sql`
-    UPDATE subtasks SET status=${subtaskStatus} WHERE subtask_id=${subtaskId}`;
+      UPDATE subtasks SET status=${subtaskStatus} WHERE subtask_id=${subtaskId}`;
+    console.log(subtaskStatus, taskId);
+    if (subtaskStatus === "done") {
+      await sql`
+        UPDATE tasks SET no_of_completed_subtasks=no_of_completed_subtasks+1 WHERE task_id=${taskId}`;
+    } else {
+      await sql`
+        UPDATE tasks SET no_of_completed_subtasks= no_of_completed_subtasks-1 WHERE task_id=${taskId}`;
+    }
+
+    //no_of_completed_subtasks
+    revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update subtask status", error);
@@ -114,6 +158,7 @@ export async function changetaskColumn(columnId, taskId) {
   try {
     await sql`
     UPDATE tasks SET column_id=${columnId} WHERE task_id=${taskId}`;
+    revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task column", error);
