@@ -10,7 +10,11 @@ import {
   fetchTaskOfColumnData,
   fetchSubTaskData,
 } from "../lib/data";
-import { changeSubtaskStatus, changetaskColumn } from "../lib/actions";
+import {
+  changeSubtaskStatus,
+  changetaskColumn,
+  deleteTask,
+} from "../lib/actions";
 
 export default async function Home() {
   const boardData = await fetchBoardData();

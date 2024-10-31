@@ -63,7 +63,7 @@ function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
                   setBoardColumns(columnsData);
                   setTasks(taskData);
                 }}
-                className="text-left border-0 rounded-r-full text-darkPurple hover:bg-darkPurple hover:text-white block w-[215px] py-2 pl-6 -ml-6 text-left"
+                className="text-left border-0 rounded-r-full text-darkPurple hover:bg-darkPurple hover:text-white block w-[215px] py-2 pl-6 -ml-6"
               >
                 <Image src={board} className="board inline mr-6" alt="" />{" "}
                 {boardName}

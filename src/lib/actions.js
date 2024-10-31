@@ -2,6 +2,71 @@
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 
+export async function populateInitData(boards) {
+  try {
+    for (let i = 0; i < boards.length; i++) {
+      console.log(`Starting with ${boards[i].name}: `);
+      for (let j = 0; j < boards[i].columns.length; j++) {
+        let column = boards[i].columns[j];
+        console.log(`-: Currently inserting data for column "${column.name}"`);
+
+        await sql`
+          INSERT INTO boards (column_name, board_name)
+          VALUES (${column.name}, ${boards[i].name})
+        `;
+
+        let columnId =
+          await sql`SELECT column_id FROM boards WHERE column_name=${column.name}`;
+
+        columnId = columnId.rows[0]["column_id"];
+
+        console.log(
+          `-: Data was inserted successfully, column id is "${columnId}", will start inserting data for the tasks and subtasks now`
+        );
+
+        for (let k = 0; k < column.tasks.length; k++) {
+          let task = column.tasks[k];
+          console.log(`--: Currently inserting data for task "${task.title}"`);
+
+          await sql`
+            INSERT INTO tasks (task_title, description, column_id, board_name, no_of_completed_subtasks, no_of_subtasks)
+            VALUES (${task.title}, ${task.description}, ${columnId}, ${boards[i].name}, 0, ${task.subtasks.length})
+          `;
+
+          let taskId =
+            await sql`SELECT task_id FROM tasks WHERE task_title=${task.title} AND column_id=${columnId}`;
+
+          taskId = taskId.rows[0]["task_id"];
+
+          console.log(
+            `--: Data was inserted successfully, task id is "${taskId}", will start inserting data for the subtasks now`
+          );
+
+          const subtasks = task.subtasks;
+          for (let l = 0; l < subtasks.length; l++) {
+            let subtask = task.subtasks[l];
+            console.log(
+              `---: Currently inserting data for subtask "${subtask.title}"`
+            );
+            await sql`
+              INSERT INTO subtasks (subtask_title, task_id, is_completed)
+              VALUES (${subtask.title}, ${taskId}, ${subtask.isCompleted})
+            `;
+            console.log(
+              `---: Data for "${subtask.title}" was inserted successfully`
+            );
+          }
+        }
+      }
+    }
+
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to populate data.", error);
+  }
+}
+
 export async function createBoard(board) {
   const title = board.title;
   const columns = board.columns;
@@ -83,8 +148,8 @@ export async function createTask(task, boardName) {
     for (let i = 0; i < subtasks.length; i++) {
       if (subtasks[i]["subtask_title"]) {
         await sql`
-          INSERT INTO subtasks (subtask_title, status, task_id)
-          VALUES (${subtasks[i]["subtask_title"]}, ${subtasks[i].status}, ${taskId.rows[0].task_id})
+          INSERT INTO subtasks (subtask_title, is_completed, task_id)
+          VALUES (${subtasks[i]["subtask_title"]}, ${subtasks[i]["is_completed"]}, ${taskId.rows[0]["task_id"]})
         `;
       }
     }
@@ -116,7 +181,7 @@ export async function updateTask(task) {
         await sql`
           UPDATE subtasks 
           SET subtask_title=${subtasks[i]["subtask_title"]}, 
-              status=${subtasks[i].status}
+              is_completed=${subtasks[i]["is_completed"]}
           WHERE subtask_id=${subtasks[i]["subtask_id"]}
         `;
       } else if (/delete/.exec(subtasks[i]["subtask_title"])) {
@@ -136,9 +201,10 @@ export async function updateTask(task) {
 export async function changeSubtaskStatus(subtaskId, subtaskStatus, taskId) {
   try {
     await sql`
-      UPDATE subtasks SET status=${subtaskStatus} WHERE subtask_id=${subtaskId}`;
+      UPDATE subtasks SET is_completed=${!subtaskStatus} WHERE subtask_id=${subtaskId}`;
     console.log(subtaskStatus, taskId);
-    if (subtaskStatus === "done") {
+
+    if (!subtaskStatus) {
       await sql`
         UPDATE tasks SET no_of_completed_subtasks=no_of_completed_subtasks+1 WHERE task_id=${taskId}`;
     } else {
@@ -162,5 +228,18 @@ export async function changetaskColumn(columnId, taskId) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task column", error);
+  }
+}
+
+export async function deleteTask(taskId) {
+  try {
+    await sql`DELETE FROM subtasks WHERE task_id=${taskId}`;
+
+    await sql`DELETE FROM tasks WHERE task_id=${taskId}`;
+
+    revalidatePath("/");
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update task", error);
   }
 }

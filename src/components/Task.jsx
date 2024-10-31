@@ -27,13 +27,13 @@ function Task({ fetchTasksData }) {
     {
       subtask_id: 1,
       subtask_title: "",
-      status: "pending",
+      is_completed: false,
       task_id: editTask["task_id"] || "",
     },
     {
       subtask_id: 2,
       subtask_title: "",
-      status: "pending",
+      is_completed: false,
       task_id: editTask["task_id"] || "",
     },
   ]);
@@ -118,13 +118,13 @@ function Task({ fetchTasksData }) {
       {
         subtask_id: 1,
         subtask_title: "",
-        status: "pending",
+        is_completed: false,
         task_id: editTask["task_id"] || "",
       },
       {
         subtask_id: 2,
         subtask_title: "",
-        status: "pending",
+        is_completed: false,
         task_id: editTask["task_id"] || "",
       },
     ]);
@@ -148,13 +148,13 @@ function Task({ fetchTasksData }) {
             {
               subtask_id: 1,
               subtask_title: "",
-              status: "pending",
+              is_completed: false,
               task_id: editTask["task_id"] || "",
             },
             {
               subtask_id: 2,
               subtask_title: "",
-              status: "pending",
+              is_completed: false,
               task_id: editTask["task_id"] || "",
             },
           ]);
@@ -253,7 +253,7 @@ function Task({ fetchTasksData }) {
                 {
                   subtask_id: prevState[prevState.length - 1]["subtask_id"] + 1,
                   subtask_title: "",
-                  status: "pending",
+                  is_completed: false,
                   task_id: editTask["task_id"] || "",
                 },
               ]);

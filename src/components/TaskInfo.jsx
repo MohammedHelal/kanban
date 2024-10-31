@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import more from "../assets/icon-vertical-ellipsis.svg";
-
+import { deleteTask } from "../lib/actions";
 import Image from "next/image";
 
 function TaskInfo({
@@ -59,8 +59,7 @@ function TaskInfo({
   }
 
   async function changeSubtaskStatus(statusId, status, taskId) {
-    let subtaskStatus = status === "pending" ? "done" : "pending";
-    changeSubtasksStatus(statusId, subtaskStatus, taskId);
+    changeSubtasksStatus(statusId, status, taskId);
 
     let subtasksData = await fetchSubTasksData(taskId);
     setSubtasks(subtasksData);
@@ -71,9 +70,16 @@ function TaskInfo({
     isBoardChange(true);
   }
 
-  function deleteTask() {
-    isBoardChange(true);
+  async function deleteTask(taskId) {
+    console.log(taskId);
+
+    await deleteTask(taskId);
+
+    const tasks = await fetchTasksData(currentBoard);
+    setTasks(tasks);
+
     closeTaskInfoModal();
+    isBoardChange(true);
   }
 
   return (
@@ -117,7 +123,7 @@ function TaskInfo({
               <li>
                 <a
                   className="block w-full py-1 px-6 rounded-lg text-grey text-center hover:bg-orange hover:text-white cursor-pointer"
-                  onClick={deleteTask}
+                  onClick={() => deleteTask(task["task_id"])}
                 >
                   Delete Task
                 </a>
@@ -145,16 +151,16 @@ function TaskInfo({
                 onChange={() => {
                   changeSubtaskStatus(
                     subtask["subtask_id"],
-                    subtask.status,
+                    subtask["is_completed"],
                     task["task_id"]
                   );
                 }}
-                checked={subtask.status === "done"}
+                checked={subtask["is_completed"]}
               />
               <label
                 htmlFor={`subtask["subtask_id"]`}
                 className={`ml-3 ${
-                  subtask.status === "done" && "line-through text-platinum"
+                  subtask["is_completed"] && "line-through text-platinum"
                 }`}
               >
                 {subtask["subtask_title"]}
