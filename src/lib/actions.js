@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 export async function createBoard(board) {
   const title = board.title;
   const columns = board.columns;
-  console.log(columns);
 
   try {
     for (let i = 0; i < columns.length; i++) {
