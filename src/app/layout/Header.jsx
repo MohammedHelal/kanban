@@ -46,7 +46,7 @@ function Header() {
           )}
           {dropDown && (
             <>
-              <ul className="absolute top-[35px] right-[25px] bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20">
+              <ul className="absolute top-[40px] right-[5px] bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20">
                 <li>
                   <a
                     className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-platinum text-white cursor-pointer"

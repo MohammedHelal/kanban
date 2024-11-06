@@ -109,7 +109,7 @@ export default function TaskInfoModal() {
               className="absolute top-0 right-0 bottom-0 left-0 z-10 rounded-lg"
               onClick={() => setDropDown(false)}
             ></div>
-            <ul className="absolute top-[80px] right-[15px]  bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20 shadow-md">
+            <ul className="absolute top-[80px] right-[0px]  bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20 shadow-md">
               <li>
                 <a
                   className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-platinum text-white cursor-pointer"
