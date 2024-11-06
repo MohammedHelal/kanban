@@ -1,249 +1,94 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
-import { createBoard, updateBoard, deleteBoard } from "../lib/actions";
+import { SidebarContext } from "../store/sidebar-context";
+import { fetchSubTasksData } from "../util/server-actions";
+import Header from "../app/layout/Header";
+import useSidebarClasses from "../util/useSidebarClasses";
 
-export default function Board({
-  fetchABoardsDetails,
-  fetchTasksOfColumnData,
-  fetchTasksData,
-}) {
-  const { closeBoardModal } = useContext(ModalContext);
-  const {
-    currentBoard,
-    isBoardChange,
-    editBoard,
-    setEditBoard,
-    setCurrentBoard,
-    setBoardColumns,
-    setTasks,
-  } = useContext(BoardTaskContext);
+export default function Board() {
+  const { openTaskInfoModal, openBoardModal } = useContext(ModalContext);
+  const { tasks, setSubtasks, boardColumns, setCurrentTask } =
+    useContext(BoardTaskContext);
+  const { sidebar } = useContext(SidebarContext);
+  const sidebarClasses = useSidebarClasses(true);
 
-  const [title, setTitle] = useState("");
-  const [columns, setColumns] = useState([
-    { id: 1, columnName: "" },
-    { id: 2, columnName: "" },
-  ]);
-
-  const [columnDelete, setColumnDelete] = useState("");
-  const [cantDeleteColumnError, setCantDeleteColumnError] = useState(false);
-
-  useEffect(() => {
-    let timer1 =
-      cantDeleteColumnError &&
-      setTimeout(() => setCantDeleteColumnError(false), 3000);
-
-    return () => {
-      clearTimeout(timer1);
-    };
-  });
-
-  useEffect(() => {
-    if (editBoard.board) {
-      setTitle(editBoard.board);
-      let array = [];
-      for (let i = 0; i < editBoard.columns.length; i++) {
-        let columnObj = {
-          id: editBoard.columns[i]["column_id"],
-          columnName: editBoard.columns[i]["column_name"],
-        };
-        array.push(columnObj);
-      }
-      setColumns(array);
-    }
-  }, [editBoard]);
-
-  function deleteBoardHandler() {
-    deleteBoard(title);
-  }
-
-  function changeHandler(e, id) {
-    let inputId = e.target.id;
-    let val = e.target.value;
-
-    if (inputId === "title") {
-      setTitle(val);
-    } else {
-      let array = columns.map((input) => {
-        if (input.id === id) {
-          input.columnName = val;
-        }
-        return input;
-      });
-
-      setColumns(array);
-    }
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    if (editBoard.board) {
-      updateBoard({
-        title: title,
-        columns: columns,
-      });
-
-      if (currentBoard === editBoard.board) {
-        (async () => {
-          let columnsData = await fetchABoardsDetails(editBoard.board);
-          let taskData = await fetchTasksData(editBoard.board);
-
-          setBoardColumns(columnsData);
-          setTasks(taskData);
-        })();
-      }
-    } else {
-      createBoard({
-        title: title,
-        columns: columns,
-      });
-    }
-    setColumns([
-      { id: 1, columnName: "" },
-      { id: 2, columnName: "" },
-    ]);
-    setTitle("");
-    setEditBoard({});
-    closeBoardModal();
-    isBoardChange(true);
-  }
+  const colorNo = [
+    "bg-cyan-500",
+    "bg-darkPurple",
+    "bg-emerald-500",
+    "bg-orange",
+  ];
 
   return (
-    <form onSubmit={handleSubmit}>
-      <button
-        type="reset"
-        className="block ml-auto -mr-12 -mt-12 rounded-tr-lg"
-        onClick={() => {
-          if (editBoard) {
-            setEditBoard({});
-          }
-          setColumns([
-            { id: 1, columnName: "" },
-            { id: 2, columnName: "" },
-          ]);
-          setTitle("");
-          closeBoardModal();
-        }}
-      >
-        <i className="board-close fa-solid fa-x p-3 pr-4 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
-      </button>
-      <h2 className="mt-0 mb-12">Add New Board</h2>
-      <div className="mb-6">
-        <label htmlFor="title" className="block text-[#4f6492]">
-          Title
-        </label>
-        <input
-          id="title"
-          name="title"
-          className="w-full border-2 rounded-lg p-1 pl-3 mt-3"
-          placeholder="eg. Web Design"
-          value={title}
-          onChange={(e) => changeHandler(e)}
-        />
-      </div>
-      <div className="mb-6">
-        <label className="block text-[#4f6492]">Columns</label>
-        {cantDeleteColumnError && (
-          <p className="py-2 px-3 bg-orange text-white rounded-lg">
-            This column contains tasks and so it can&apos;t be deleted
-          </p>
-        )}
-        {columns.map((input, i) => {
-          if (!/delete/.exec(input.columnName))
-            return (
-              <div key={input.id} className="flex my-3">
-                <input
-                  id={`column${input.id}`}
-                  name={`column${input.id}`}
-                  placeholder={`${
-                    i == 0
-                      ? "eg. To do"
-                      : i == 1
-                      ? "eg. Doing"
-                      : i == 2
-                      ? "eg. Done"
-                      : "Next Column"
-                  }`}
-                  className={`w-full border-2 rounded-l-lg ${
-                    columnDelete === `column${input.id}` && "border-orange"
-                  } p-1 pl-3`}
-                  value={input.columnName}
-                  onChange={(e) => changeHandler(e, input.id)}
-                />
-                <i
-                  className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 border-2 rounded-r-lg text-[#4f6492] hover:bg-orange hover:text-white hover:border-orange cursor-pointer"
-                  onClick={async () => {
-                    if (columns.length > 1) {
-                      let array = [...columns];
-                      if (editBoard.board) {
-                        let tasksData = await fetchTasksOfColumnData(input.id);
-                        if (tasksData.length <= 0) {
-                          let currentInput = array[i];
-                          if (currentInput.columnName !== "") {
-                            currentInput.columnName += "delete";
-                          }
-                          setColumns(array);
-                        } else {
-                          setCantDeleteColumnError(true);
-                        }
-                      } else {
-                        let columnsArray = array.filter(
-                          (e) => e.id != input.id
-                        );
-                        setColumns(columnsArray);
-                      }
-                    }
-                  }}
-                  onMouseEnter={() => {
-                    setColumnDelete(`column${input.id}`);
-                  }}
-                  onMouseLeave={() => setColumnDelete("")}
-                ></i>
-              </div>
-            );
-        })}
-        <button
-          className="btn-secondary my-6 ml-auto block w-full"
-          onClick={() => {
-            if (columns.length < 12) {
-              setColumns((prevState) => [
-                ...prevState,
-                {
-                  id: prevState[prevState.length - 1].id + 1 + "new",
-                  columnName: "",
-                },
-              ]);
-            }
-          }}
-          type="button"
-        >
-          + Add New Column
-        </button>
-      </div>
+    <main
+      className={`min-h-screen m-trans ${sidebarClasses} scroll-m-0 bg-greyBlue`}
+    >
+      {boardColumns.length > 0 && <Header />}
       <div
-        className={`${
-          editBoard.board && "w-full flex justify-between items-center mt-6"
+        className={`relative p-6 h-[calc(100vh-88.6px)] scroll-auto overflow-auto flex ${
+          sidebar ? "w-[calc(100vw - 300px)]" : "w-full"
         }`}
       >
-        {editBoard.board && (
-          <button
-            className="btn-destructive"
-            type="button"
-            onClick={deleteBoardHandler}
+        {boardColumns.length > 0 &&
+          boardColumns.map((column, i) => {
+            return (
+              <div
+                key={column["column_id"]}
+                className="w-[280px] h-[200vh] mr-12 shrink-0 text-center"
+              >
+                <div className="flex items-center">
+                  <div
+                    className={`p-2 mr-3 inline-block rounded-full border-2 ${
+                      colorNo[i < 4 ? i : i >= 4 && i < 8 ? i - 4 : i - 8]
+                    }`}
+                  ></div>
+                  <h4 className="text-left text-[#5d5e75] uppercase tracking-[0.25em] text-base">
+                    <span>{column["column_name"]} (0)</span>
+                  </h4>
+                </div>
+                {tasks.length > 0 &&
+                  tasks.map((task) => {
+                    if (task["column_id"] === column["column_id"]) {
+                      return (
+                        <div
+                          key={task["task_id"]}
+                          className="bg-white w-full border-0 rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
+                          onClick={async () => {
+                            let subtasks = await fetchSubTasksData(
+                              task["task_id"]
+                            );
+
+                            setCurrentTask(task);
+                            setSubtasks(subtasks);
+                            openTaskInfoModal();
+                          }}
+                        >
+                          <h2 className="text-left mb-2 text-wrap">
+                            {task["task_title"]}
+                          </h2>
+                          <p className="text-left font-bold text-platinum mb-3.5">
+                            {task["no_of_completed_subtasks"]} of{" "}
+                            {task["no_of_subtasks"]} Subtasks
+                          </p>
+                        </div>
+                      );
+                    }
+                  })}
+              </div>
+            );
+          })}
+        {boardColumns.length > 0 && (
+          <div
+            onClick={() => openBoardModal()}
+            className="w-[280px] h-[200vh] shrink-0 mr-6 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
           >
-            Delete Board
-          </button>
+            <h1 className="new-column text-darkPurple">+ Add New Column</h1>
+          </div>
         )}
-        <button
-          className={`btn-primary ${!editBoard.board && "w-full"}`}
-          type="submit"
-        >
-          {editBoard.board ? "Save Changes" : "Create New Board"}
-        </button>
       </div>
-    </form>
+    </main>
   );
 }

@@ -4,8 +4,9 @@ import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import { createTask, updateTask } from "../lib/actions";
+import { fetchTasksData } from "../util/server-actions";
 
-function Task({ fetchTasksData }) {
+export default function TaskModal() {
   const { closeTaskModal, closeTaskInfoModal } = useContext(ModalContext);
   const {
     currentBoard,
@@ -288,5 +289,3 @@ function Task({ fetchTasksData }) {
     </form>
   );
 }
-
-export default Task;

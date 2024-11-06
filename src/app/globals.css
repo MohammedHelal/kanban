@@ -26,8 +26,9 @@ option {
   line-height: 23px;
   color: var(--color-black);
 
-  --color-dark-purple: #635fc7;
   --color-light-purple: #a8a4ff;
+  --color-dark-purple: #635fc7;
+  --color-darker-purple: #322f8d;
 
   --color-black: #000112;
   --color-magnum-grey: #20212c;
@@ -43,13 +44,6 @@ option {
 
   --color-orange: #ea5555;
   --color-light-orange: #ff9898;
-}
-
-body {
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-  white-space: nowrap;
 }
 
 body,
@@ -147,10 +141,8 @@ h4 {
   transition: margin 0.5s;
 }
 
-main {
-  height: calc(100vh - 88.6px);
-  overflow: auto;
-  white-space: nowrap;
+hr {
+  border-top: 1px solid var(--color-platinum);
 }
 
 section {

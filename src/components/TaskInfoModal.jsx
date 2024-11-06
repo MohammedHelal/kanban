@@ -4,15 +4,18 @@ import { useState, useContext, useEffect } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import more from "../assets/icon-vertical-ellipsis.svg";
+import cross from "../assets/icon-cross.svg";
 import { deleteTask } from "../lib/actions";
 import Image from "next/image";
 
-function TaskInfo({
+import {
   changeSubtasksStatus,
   fetchSubTasksData,
   changeTasksColumn,
   fetchTasksData,
-}) {
+} from "../util/server-actions";
+
+export default function TaskInfoModal() {
   const { openTaskModal, closeTaskInfoModal } = useContext(ModalContext);
   const {
     currentTask: task = {},
@@ -70,9 +73,7 @@ function TaskInfo({
     isBoardChange(true);
   }
 
-  async function deleteTask(taskId) {
-    console.log(taskId);
-
+  async function taskDeletionHandler(taskId) {
     await deleteTask(taskId);
 
     const tasks = await fetchTasksData(currentBoard);
@@ -83,7 +84,7 @@ function TaskInfo({
   }
 
   return (
-    <div className="relative p-12 w-[480px] rounded-lg">
+    <div className="relative min-w-[350px]">
       <button
         type="reset"
         className="block ml-auto -mr-12 -mt-12"
@@ -92,13 +93,13 @@ function TaskInfo({
           closeTaskInfoModal();
         }}
       >
-        <i className="fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
+        <i className="task-info-close fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start">
         <h1>{task["task_title"]}</h1>
         <Image
-          src={more}
-          className="h-[20px] cursor-pointer"
+          src={dropDown ? cross : more}
+          className="my-[20px] cursor-pointer z-20"
           alt="drop down menu"
           onClick={() => setDropDown((prevState) => !prevState)}
         />
@@ -108,24 +109,28 @@ function TaskInfo({
               className="absolute top-0 right-0 bottom-0 left-0 z-10 rounded-lg"
               onClick={() => setDropDown(false)}
             ></div>
-            <ul className="absolute top-[75px] right-[45px] bg-greyBlue p-3 border-0 rounded-lg z-20 shadow-md">
+            <ul className="absolute top-[80px] right-[15px]  bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20 shadow-md">
               <li>
                 <a
-                  className="block w-full py-1 px-6 text-grey text-center rounded-lg mb-1 hover:bg-platinum hover:text-white cursor-pointer"
+                  className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-platinum text-white cursor-pointer"
                   onClick={() => {
                     setEditTask(task);
+                    setDropDown(false);
                     openTaskModal();
                   }}
                 >
-                  Edit Task
+                  <i className="fa-solid fa-pen-to-square ml-auto p-3 rounded-full text-darkPurple group-hover:text-white cursor-pointer"></i>{" "}
+                  Edit task
                 </a>
               </li>
+              <hr className="" />
               <li>
                 <a
-                  className="block w-full py-1 px-6 rounded-lg text-grey text-center hover:bg-orange hover:text-white cursor-pointer"
-                  onClick={() => deleteTask(task["task_id"])}
+                  className="group block w-full py-1 px-6 rounded-b-lg text-left hover:bg-orange text-white cursor-pointer"
+                  onClick={() => taskDeletionHandler(task["task_id"])}
                 >
-                  Delete Task
+                  <i className="fa-solid fa-trash ml-auto p-3 rounded-full text-darkPurple group-hover:text-white cursor-pointer"></i>{" "}
+                  Delete task
                 </a>
               </li>
             </ul>
@@ -186,5 +191,3 @@ function TaskInfo({
     </div>
   );
 }
-
-export default TaskInfo;

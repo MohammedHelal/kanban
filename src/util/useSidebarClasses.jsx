@@ -6,7 +6,7 @@ import { SidebarContext } from "../store/sidebar-context";
 function useSidebarClasses({ main }) {
   const { sidebar } = useContext(SidebarContext);
 
-  return sidebar ? `ml-[300px] ${main ? "rounded-lg" : ""}` : "ml-0";
+  return sidebar ? `ml-[250px] ${main ? "rounded-lg" : ""}` : "ml-0";
 }
 
 export default useSidebarClasses;

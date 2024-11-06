@@ -24,7 +24,10 @@ function Modal({ children, open, className = "" }) {
 
   return mounted
     ? createPortal(
-        <dialog ref={dialog} className={`modal ${className}`}>
+        <dialog
+          ref={dialog}
+          className={`modal ${className} backdrop:bg-black/50 backdrop:backdrop-blur-sm`}
+        >
           {children}
         </dialog>,
         ref.current

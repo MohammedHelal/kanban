@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import { SidebarContext } from "@/src/store/sidebar-context";
+import { fetchABoardsDetails, fetchTasksData } from "@/src/util/server-actions";
 import logo from "@/src/assets/logo-dark.svg";
 import show from "@/src/assets/icon-show-sidebar.svg";
 import hide from "@/src/assets/icon-hide-sidebar.svg";
@@ -12,11 +13,10 @@ import Image from "next/image";
 
 import PropTypes from "prop-types";
 
-function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
+function Sidebar({ boardData }) {
   const { openBoardModal } = useContext(ModalContext);
   const {
-    isChanged,
-    isBoardChange,
+    currentBoard,
     setCurrentBoard,
     setBoardColumns,
     setEditBoard,
@@ -44,7 +44,7 @@ function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
 
   return (
     <aside
-      className={`sidebar absolute w-[300px] top-0 left-0 flex flex-col justify-between h-screen bg-white z-10 px-6 ${
+      className={`sidebar absolute w-[250px] top-0 left-0 flex flex-col justify-between h-screen bg-white z-10 px-6 ${
         sidebar ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -53,39 +53,25 @@ function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
         <div id="boards" className="my-16">
           <h4 className="">ALL BOARDS ({boards.length})</h4>
           {boards.map((boardName, i) => (
-            <div key={i} className="flex items-center ">
+            <div key={i} className="flex items-center mb-1">
               <button
                 onClick={async () => {
                   let columnsData = await fetchABoardsDetails(boardName);
                   let taskData = await fetchTasksData(boardName);
 
-                  console.log(`Board ${boardName} data:`);
-                  console.log(`Column data:`);
-                  console.log(columnsData);
-                  console.log(`Task data:`);
-                  console.log(taskData);
-
                   setCurrentBoard(boardName);
                   setBoardColumns(columnsData);
                   setTasks(taskData);
                 }}
-                className="text-left border-0 rounded-r-full text-darkPurple hover:bg-darkPurple hover:text-white block w-[215px] py-2 pl-6 -ml-6"
+                className={`text-left border-0 rounded-r-full ${
+                  currentBoard === boardName
+                    ? "bg-darkerPurple text-white"
+                    : "text-darkPurple hover:bg-darkPurple hover:text-white"
+                }  block w-[215px] py-2 pl-6 -ml-6`}
               >
                 <Image src={board} className="board inline mr-6" alt="" />{" "}
                 {boardName}
               </button>
-              <i
-                className="fa-solid fa-pen-to-square ml-auto p-3 rounded-full text-darkPurple hover:bg-darkPurple hover:text-white cursor-pointer"
-                onClick={async () => {
-                  let columnsData = await fetchABoardsDetails(boardName);
-
-                  openBoardModal();
-                  setEditBoard({
-                    board: boardName,
-                    columns: columnsData,
-                  });
-                }}
-              ></i>
             </div>
           ))}
           <button
@@ -106,12 +92,14 @@ function Sidebar({ fetchABoardsDetails, boardData, fetchTasksData }) {
           Hide sidebar
         </button>
       </div>
-      <button
-        className={`show-sidebar absolute bottom-1/4 -right-[42px] bg-indigo-500 my-6 px-4 py-3 rounded-r-full rounded-l-none`}
-        onClick={showSidebar}
-      >
-        <Image src={show} alt="Sidebar eye!" />
-      </button>
+      {!sidebar && (
+        <button
+          className={`absolute bottom-16 -right-[42px] bg-indigo-500 my-6 px-4 py-3 rounded-r-full rounded-l-none`}
+          onClick={showSidebar}
+        >
+          <Image src={show} alt="Sidebar eye!" />
+        </button>
+      )}
     </aside>
   );
 }

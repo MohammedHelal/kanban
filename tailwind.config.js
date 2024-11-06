@@ -14,8 +14,9 @@ export const theme = {
         "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
     },
     colors: {
-      darkPurple: "#635fc7",
       lightPurple: "#a8a4ff",
+      darkPurple: "#635fc7",
+      darkerPurple: "#322f8d",
 
       black: "#000112",
       magnumGrey: "#20212c",
