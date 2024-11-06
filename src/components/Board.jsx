@@ -94,7 +94,7 @@ export default function Board() {
                       return (
                         <div
                           key={task["task_id"]}
-                          className="bg-white w-full border-0 rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
+                          className="bg-white w-full border-[1px] border-white hover:border-[1px] hover:border-platinum rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
                           onClick={async () => {
                             let subtasks = await fetchSubTasksData(
                               task["task_id"]

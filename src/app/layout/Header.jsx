@@ -26,7 +26,7 @@ function Header() {
       <div
         className={`w-full navbar m-trans p-6 flex items-center justify-between`}
       >
-        <h2>{currentBoard}</h2>
+        <h1>{currentBoard}</h1>
         <div className="relative flex justify-between items-center w-1/5">
           {currentBoard && (
             <>
