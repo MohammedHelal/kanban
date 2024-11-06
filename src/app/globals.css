@@ -123,6 +123,7 @@ h4 {
 }
 .btn-secondary:hover {
   background-color: var(--color-platinum);
+  color: white;
 }
 .btn-destructive {
   border: 0;
@@ -131,7 +132,7 @@ h4 {
   color: var(--color-white);
   background-color: var(--color-orange);
   border-radius: 30px;
-  padding: 12.5px 25px;
+  padding: 10px 25px;
 }
 .btn-destructive:hover {
   background-color: var(--color-light-orange);

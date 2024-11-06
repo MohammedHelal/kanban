@@ -6,16 +6,17 @@ import Modal from "./Modal";
 import BoardModal from "../components/BoardModal";
 import TaskModal from "../components/TaskModal";
 import TaskInfoModal from "../components/TaskInfoModal";
+import DeleteBoardModal from "../components/DeleteBoardModal";
+import DeleteTaskModal from "../components/DeleteTaskModal";
 
-function ModalsContainer({
-  changeSubtasksStatus,
-  fetchSubTasksData,
-  changeTasksColumn,
-  fetchTasksData,
-  fetchTasksOfColumnData,
-  fetchABoardsDetails,
-}) {
-  const { boardModal, taskModal, taskInfoModal } = useContext(ModalContext);
+function ModalsContainer() {
+  const {
+    boardModal,
+    taskModal,
+    taskInfoModal,
+    deleteBoardModal,
+    deleteTaskModal,
+  } = useContext(ModalContext);
 
   return (
     <>
@@ -36,6 +37,18 @@ function ModalsContainer({
         className="p-12 pb-8 w-[480px] rounded-lg border-2 has-[.task-info-close:hover]:border-orange"
       >
         <TaskInfoModal />
+      </Modal>
+      <Modal
+        open={deleteBoardModal}
+        className="p-12 pb-8 w-[480px] rounded-lg border-2"
+      >
+        <DeleteBoardModal />
+      </Modal>
+      <Modal
+        open={deleteTaskModal}
+        className="p-12 pb-8 w-[480px] rounded-lg border-2"
+      >
+        <DeleteTaskModal />
       </Modal>
     </>
   );

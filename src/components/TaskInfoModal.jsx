@@ -16,7 +16,8 @@ import {
 } from "../util/server-actions";
 
 export default function TaskInfoModal() {
-  const { openTaskModal, closeTaskInfoModal } = useContext(ModalContext);
+  const { openTaskModal, closeTaskInfoModal, openDeleteTaskModal } =
+    useContext(ModalContext);
   const {
     currentTask: task = {},
     setTasks,
@@ -80,7 +81,6 @@ export default function TaskInfoModal() {
     setTasks(tasks);
 
     closeTaskInfoModal();
-    isBoardChange(true);
   }
 
   return (
@@ -127,7 +127,11 @@ export default function TaskInfoModal() {
               <li>
                 <a
                   className="group block w-full py-1 px-6 rounded-b-lg text-left hover:bg-orange text-white cursor-pointer"
-                  onClick={() => taskDeletionHandler(task["task_id"])}
+                  onClick={() => {
+                    setDropDown(false);
+                    openDeleteTaskModal();
+                    closeTaskInfoModal();
+                  }}
                 >
                   <i className="fa-solid fa-trash ml-auto p-3 rounded-full text-darkPurple group-hover:text-white cursor-pointer"></i>{" "}
                   Delete task

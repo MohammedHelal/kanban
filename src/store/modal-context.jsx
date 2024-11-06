@@ -8,10 +8,18 @@ export const ModalContext = createContext({
   boardModal: false,
   openBoardModal: () => {},
   closeBoardModal: () => {},
+  //delete board modal
+  deleteBoardModal: false,
+  openDeleteBoardModal: () => {},
+  closeDeleteBoardModal: () => {},
   //task modals
   taskModal: false,
   openTaskModal: () => {},
   closeTaskModal: () => {},
+  //delete task modals
+  deleteTaskModal: false,
+  openDeleteTaskModal: () => {},
+  closeDeleteTaskModal: () => {},
   //task info modal
   taskInfoModal: false,
   openTaskInfoModal: () => {},
@@ -21,11 +29,19 @@ export const ModalContext = createContext({
 export default function ModalContextProvider({ children }) {
   // modal states; used for opening the modals for the forms and such
   const [boardModal, setBoardModal] = useState(false);
+  const [deleteBoardModal, setDeleteBoardModal] = useState(false);
   const [taskModal, setTaskModal] = useState(false);
+  const [deleteTaskModal, setDeleteTaskModal] = useState(false);
   const [taskInfoModal, setTaskInfoModal] = useState(false);
 
   const openBoardModal = () => setBoardModal(true);
   const closeBoardModal = () => setBoardModal(false);
+
+  const openDeleteBoardModal = () => setDeleteBoardModal(true);
+  const closeDeleteBoardModal = () => setDeleteBoardModal(false);
+
+  const openDeleteTaskModal = () => setDeleteTaskModal(true);
+  const closeDeleteTaskModal = () => setDeleteTaskModal(false);
 
   const openTaskModal = () => setTaskModal(true);
   const closeTaskModal = () => setTaskModal(false);
@@ -38,10 +54,18 @@ export default function ModalContextProvider({ children }) {
     boardModal: boardModal,
     openBoardModal: openBoardModal,
     closeBoardModal: closeBoardModal,
+    //delete board modals
+    deleteBoardModal: deleteBoardModal,
+    openDeleteBoardModal: openDeleteBoardModal,
+    closeDeleteBoardModal: closeDeleteBoardModal,
     //task modals
     taskModal: taskModal,
     openTaskModal: openTaskModal,
     closeTaskModal: closeTaskModal,
+    //delete task modals
+    deleteTaskModal: deleteTaskModal,
+    openDeleteTaskModal: openDeleteTaskModal,
+    closeDeleteTaskModal: closeDeleteTaskModal,
     //task info modal
     taskInfoModal: taskInfoModal,
     openTaskInfoModal: openTaskInfoModal,

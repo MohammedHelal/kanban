@@ -57,10 +57,19 @@ export async function updateBoard(board) {
   }
 }
 
-export async function deleteBoard(boardName) {
+export async function deleteBoard(boardName, columns, tasks) {
   try {
-    console.log(boardName);
-    await sql`DELETE FROM boards WHERE board_name=${boardName}`;
+    for (let i = 0; i < tasks.length; i++) {
+      const id = tasks[i]["task_id"];
+      //await sql`DELETE FROM subtasks WHERE task_id=${id}`;
+    }
+
+    for (let i = 0; i < columns.length; i++) {
+      const id = columns[i]["column_id"];
+      //await sql`DELETE FROM tasks WHERE column_id=${id}`;
+    }
+    console.log("board deletion disabled for now!");
+    //await sql`DELETE FROM boards WHERE board_name=${boardName}`;
     revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
