@@ -17,7 +17,7 @@ function DeleteTaskModal() {
 
   return (
     <>
-      <h1 className="mb-6">Delete this task?</h1>
+      <h1 className="mb-6 text-orange">Delete this task?</h1>
       <p className="my-6 text-platinum">
         Are you sure you want to delete the &apos;{currentTask["task_title"]}
         &apos; task and its subtasks? This action cannot be reversed.
