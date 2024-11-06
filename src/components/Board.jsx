@@ -1,19 +1,54 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import { SidebarContext } from "../store/sidebar-context";
-import { fetchSubTasksData } from "../util/server-actions";
+import { fetchSubTasksData, fetchABoardsDetails } from "../util/server-actions";
 import Header from "../app/layout/Header";
 import useSidebarClasses from "../util/useSidebarClasses";
 
 export default function Board() {
   const { openTaskInfoModal, openBoardModal } = useContext(ModalContext);
-  const { tasks, setSubtasks, boardColumns, setCurrentTask } =
-    useContext(BoardTaskContext);
+  const {
+    tasks,
+    setSubtasks,
+    boardColumns,
+    setCurrentTask,
+    currentBoard,
+    setEditBoard,
+  } = useContext(BoardTaskContext);
   const { sidebar } = useContext(SidebarContext);
   const sidebarClasses = useSidebarClasses(true);
+  const [taskNumber, setTaskNumber] = useState({});
+
+  useEffect(() => {
+    tasks.map((task) => {
+      let columnId = task["column_id"];
+      let taskId = task["task_id"];
+
+      if (columnId in taskNumber) {
+        const isIncluded = taskNumber[columnId].find((task) => task === taskId);
+        if (!isIncluded) {
+          const newArray = [...taskNumber[columnId]];
+          newArray.push(taskId);
+          setTaskNumber((prevState) => {
+            return {
+              ...prevState,
+              [columnId]: newArray,
+            };
+          });
+        }
+      } else {
+        setTaskNumber((prevState) => {
+          return {
+            ...prevState,
+            [columnId]: [taskId],
+          };
+        });
+      }
+    });
+  }, [taskNumber, tasks]);
 
   const colorNo = [
     "bg-cyan-500",
@@ -24,11 +59,10 @@ export default function Board() {
 
   return (
     <main
-      className={`min-h-screen m-trans ${sidebarClasses} scroll-m-0 bg-greyBlue`}
+      className={`m-trans h-screen scroll-auto overflow-auto ${sidebarClasses} scroll-m-0 bg-greyBlue`}
     >
-      {boardColumns.length > 0 && <Header />}
       <div
-        className={`relative p-6 h-[calc(100vh-88.6px)] scroll-auto overflow-auto flex ${
+        className={`relative p-6 pt-[100px] flex ${
           sidebar ? "w-[calc(100vw - 300px)]" : "w-full"
         }`}
       >
@@ -37,7 +71,7 @@ export default function Board() {
             return (
               <div
                 key={column["column_id"]}
-                className="w-[280px] h-[200vh] mr-12 shrink-0 text-center"
+                className="w-[280px] mr-12 shrink-0 text-center"
               >
                 <div className="flex items-center">
                   <div
@@ -46,7 +80,13 @@ export default function Board() {
                     }`}
                   ></div>
                   <h4 className="text-left text-[#5d5e75] uppercase tracking-[0.25em] text-base">
-                    <span>{column["column_name"]} (0)</span>
+                    <span>
+                      {column["column_name"]} (
+                      {taskNumber[column["column_id"]]
+                        ? taskNumber[column["column_id"]].length
+                        : 0}
+                      )
+                    </span>
                   </h4>
                 </div>
                 {tasks.length > 0 &&
@@ -82,10 +122,18 @@ export default function Board() {
           })}
         {boardColumns.length > 0 && (
           <div
-            onClick={() => openBoardModal()}
-            className="w-[280px] h-[200vh] shrink-0 mr-6 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
+            className="w-[280px] mt-[64px] mr-6 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
+            onClick={async () => {
+              let columnsData = await fetchABoardsDetails(currentBoard);
+
+              openBoardModal();
+              setEditBoard({
+                board: currentBoard,
+                columns: columnsData,
+              });
+            }}
           >
-            <h1 className="new-column text-darkPurple">+ Add New Column</h1>
+            <h2 className="text-darkPurple">+ Add New Column</h2>
           </div>
         )}
       </div>
