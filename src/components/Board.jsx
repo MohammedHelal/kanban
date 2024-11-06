@@ -5,7 +5,6 @@ import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import { SidebarContext } from "../store/sidebar-context";
 import { fetchSubTasksData, fetchABoardsDetails } from "../util/server-actions";
-import Header from "../app/layout/Header";
 import useSidebarClasses from "../util/useSidebarClasses";
 
 export default function Board() {

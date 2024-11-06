@@ -15,13 +15,8 @@ import PropTypes from "prop-types";
 
 function Sidebar({ boardData }) {
   const { openBoardModal } = useContext(ModalContext);
-  const {
-    currentBoard,
-    setCurrentBoard,
-    setBoardColumns,
-    setEditBoard,
-    setTasks,
-  } = useContext(BoardTaskContext);
+  const { currentBoard, setCurrentBoard, setBoardColumns, setTasks } =
+    useContext(BoardTaskContext);
   const { sidebar, hideSidebar, showSidebar } = useContext(SidebarContext);
 
   const [boards, setBoards] = useState([]);
@@ -49,7 +44,7 @@ function Sidebar({ boardData }) {
       }`}
     >
       <div id="boards" className={`my-9 mx-0`}>
-        <Image src={logo} className="" alt="Logo" />
+        <Image src={logo} className="" alt="Logo" priority />
         <div id="boards" className="my-16">
           <h4 className="">ALL BOARDS ({boards.length})</h4>
           {boards.map((boardName, i) => (
@@ -85,19 +80,18 @@ function Sidebar({ boardData }) {
       </div>
       <div className="my-12">
         <button
-          className={`bg-greyBlue border-0 rounded-full p-1 w-full text-grey-500 `}
+          className={`bg-greyBlue hover:bg-magnumGrey hover:text-white border-0 rounded-full p-1 w-full text-grey-500 `}
           onClick={hideSidebar}
         >
-          <Image src={hide} className="inline pb-1 pr-3" alt="Sidebar eye!" />{" "}
-          Hide sidebar
+          <i className="fa-regular fa-eye-slash mr-2"></i> Hide sidebar
         </button>
       </div>
       {!sidebar && (
         <button
-          className={`absolute bottom-16 -right-[42px] bg-indigo-500 my-6 px-4 py-3 rounded-r-full rounded-l-none`}
+          className={`absolute bottom-16 -right-[42px] bg-darkPurple text-white hover:bg-darkerPurple my-6 px-4 py-3 rounded-r-full rounded-l-none`}
           onClick={showSidebar}
         >
-          <Image src={show} alt="Sidebar eye!" />
+          <i class="fa-regular fa-eye fa-lg"></i>
         </button>
       )}
     </aside>

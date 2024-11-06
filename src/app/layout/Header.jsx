@@ -21,7 +21,7 @@ function Header() {
       className={`absolute left-0 right-0 w-full h-[88.6px] p-0 flex items-center shadow-lg bg-white z-10`}
     >
       <div className="flex items-center w-[300px] h-full border-r-[1px] border-greyBlue">
-        <Image src={logo} className="ml-[20px] mb-[5px]" alt="Logo" />
+        <Image src={logo} className="ml-[20px] mb-[5px]" alt="Logo" priority />
       </div>
       <div
         className={`w-full navbar m-trans p-6 flex items-center justify-between`}
