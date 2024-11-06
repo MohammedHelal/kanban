@@ -27,7 +27,7 @@ function DeleteBoardModal() {
           className={`btn-destructive min-w-[150px]`}
           onClick={boardDeletionHandler}
         >
-          {!loading ? (
+          {loading ? (
             <>
               <div role="status">
                 <svg
