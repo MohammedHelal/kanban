@@ -6,6 +6,7 @@ import { BoardTaskContext } from "@/src/store/board-task-context";
 import { SidebarContext } from "@/src/store/sidebar-context";
 import { fetchABoardsDetails, fetchTasksData } from "@/src/util/server-actions";
 import logo from "@/src/assets/logo-dark.svg";
+
 import show from "@/src/assets/icon-show-sidebar.svg";
 import hide from "@/src/assets/icon-hide-sidebar.svg";
 import board from "@/src/assets/icon-board.svg";
@@ -38,63 +39,70 @@ function Sidebar({ boardData }) {
   }, [boardData]);
 
   return (
-    <aside
-      className={`sidebar absolute w-[250px] top-0 left-0 flex flex-col justify-between h-screen bg-white border-r-[1px] border-greyBlue z-10 px-6 ${
-        sidebar ? "translate-x-0" : "-translate-x-full"
-      }`}
-    >
-      <div id="boards" className={`my-9 mx-0`}>
-        <Image src={logo} className="" alt="Logo" priority />
-        <div id="boards" className="my-16">
-          <h4 className="">ALL BOARDS ({boards.length})</h4>
-          {boards.map((boardName, i) => (
-            <div key={i} className="flex items-center mb-1">
-              <button
-                onClick={async () => {
-                  let columnsData = await fetchABoardsDetails(boardName);
-                  let taskData = await fetchTasksData(boardName);
+    <>
+      <aside
+        className={`sidebar absolute w-[250px] top-0 left-0 flex flex-col justify-between h-screen bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
+          sidebar ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div id="boards" className={`my-9 mx-0`}>
+          <Image src={logo} className="" alt="Logo" priority />
+          <div id="boards" className="my-16">
+            <h4 className="">ALL BOARDS ({boards.length})</h4>
+            {boards.map((boardName, i) => (
+              <div key={i} className="flex items-center mb-1">
+                <button
+                  onClick={async () => {
+                    let columnsData = await fetchABoardsDetails(boardName);
+                    let taskData = await fetchTasksData(boardName);
 
-                  setCurrentBoard(boardName);
-                  setBoardColumns(columnsData);
-                  setTasks(taskData);
-                }}
-                className={`text-left border-0 rounded-r-full ${
-                  currentBoard === boardName
-                    ? "bg-darkerPurple text-white"
-                    : "text-darkPurple hover:bg-darkPurple hover:text-white"
-                }  block w-[215px] py-2 pl-6 -ml-6`}
-              >
-                <Image src={board} className="board inline mr-6" alt="" />{" "}
-                {boardName}
-              </button>
-            </div>
-          ))}
+                    setCurrentBoard(boardName);
+                    setBoardColumns(columnsData);
+                    setTasks(taskData);
+                  }}
+                  className={`text-left border-0 rounded-r-full ${
+                    currentBoard === boardName
+                      ? "bg-darkerPurple text-white"
+                      : "text-darkPurple hover:bg-darkPurple hover:text-white"
+                  }  block w-[215px] py-2 pl-6 -ml-6`}
+                >
+                  <Image src={board} className="board inline mr-6" alt="" />{" "}
+                  {boardName}
+                </button>
+              </div>
+            ))}
+            <button
+              className="create-new-modal block py-2 pl-6 -ml-6 w-full text-left text-platinum font-bold bg-inherit hover:text-grey"
+              onClick={openBoardModal}
+            >
+              <Image src={board} className="svg-img inline mr-6" alt="" /> +
+              Create new boards{" "}
+            </button>
+          </div>
+        </div>
+        <div className="my-12">
           <button
-            className="create-new-modal block py-2 pl-6 -ml-6 w-full text-left text-platinum font-bold bg-inherit hover:text-grey"
-            onClick={openBoardModal}
+            className={`bg-greyBlue hover:bg-magnumGrey hover:text-white border-0 rounded-full p-1 w-full text-grey-500 `}
+            onClick={hideSidebar}
           >
-            <Image src={board} className="svg-img inline mr-6" alt="" /> +
-            Create new boards{" "}
+            <i className="fa-regular fa-eye-slash mr-2"></i> Hide sidebar
           </button>
         </div>
-      </div>
-      <div className="my-12">
-        <button
-          className={`bg-greyBlue hover:bg-magnumGrey hover:text-white border-0 rounded-full p-1 w-full text-grey-500 `}
-          onClick={hideSidebar}
-        >
-          <i className="fa-regular fa-eye-slash mr-2"></i> Hide sidebar
-        </button>
-      </div>
-      {!sidebar && (
-        <button
-          className={`absolute bottom-16 -right-[42px] bg-darkPurple text-white hover:bg-darkerPurple my-6 px-4 py-3 rounded-r-full rounded-l-none`}
-          onClick={showSidebar}
-        >
-          <i class="fa-regular fa-eye fa-lg"></i>
-        </button>
-      )}
-    </aside>
+        {!sidebar && (
+          <button
+            className={`absolute bottom-16 -right-[42px] bg-darkPurple text-white hover:bg-darkerPurple my-6 px-4 py-3 rounded-r-full rounded-l-none`}
+            onClick={showSidebar}
+          >
+            <i className="fa-regular fa-eye fa-lg"></i>
+          </button>
+        )}
+      </aside>
+      <div
+        className={`${
+          sidebar ? "block md:hidden" : "hidden"
+        }  absolute top-0 bottom-0 left-0 right-0 bg-magnumGrey/50 z-10`}
+      ></div>
+    </>
   );
 }
 

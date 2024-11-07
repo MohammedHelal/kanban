@@ -141,7 +141,7 @@ export default function TaskModal() {
     <form onSubmit={submitHandler}>
       <button
         type="reset"
-        className="block ml-auto -mr-12 -mt-12"
+        className="block ml-auto -mr-6 md:-mr-12 -mt-6 md:-mt-12"
         onClick={() => {
           setTitle("");
           setDescription("");

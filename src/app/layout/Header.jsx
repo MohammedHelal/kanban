@@ -6,6 +6,7 @@ import { BoardTaskContext } from "@/src/store/board-task-context";
 import { fetchABoardsDetails } from "@/src/util/server-actions";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
 import logo from "@/src/assets/logo-dark.svg";
+import logoMobile from "@/src/assets/logo-mobile.svg";
 import cross from "@/src/assets/icon-cross.svg";
 
 import Image from "next/image";
@@ -20,25 +21,28 @@ function Header() {
     <header
       className={`absolute left-0 right-0 w-full h-[88.6px] p-0 flex items-center shadow-lg bg-white z-10`}
     >
-      <div className="flex items-center w-[300px] h-full border-r-[1px] border-greyBlue">
+      <div className="hidden md:flex items-center w-[250px] h-full border-r-[1px] border-greyBlue">
         <Image src={logo} className="ml-[20px] mb-[5px]" alt="Logo" priority />
       </div>
+      <div className="md:hidden flex items-center px-[20px] h-full border-r-[1px] border-greyBlue">
+        <Image src={logoMobile} className="" alt="Logo" priority />
+      </div>
       <div
-        className={`w-full navbar m-trans p-6 flex items-center justify-between`}
+        className={`w-full md:w-[calc(100vw-250px)] navbar m-trans p-6 flex items-center justify-between`}
       >
-        <h1>{currentBoard}</h1>
-        <div className="relative flex justify-between items-center w-1/5">
+        <h1 className="w-[50px] md:w-auto">{currentBoard}</h1>
+        <div className="relative flex justify-between items-center min-w-1/5">
           {currentBoard && (
             <>
               <button
-                className="btn-primary L"
+                className="btn-primary L lg:mr-6"
                 onClick={() => openTaskModal(true)}
               >
                 + Add New Task
               </button>
               <Image
                 src={dropDown ? cross : more}
-                className="mx-3 cursor-pointer"
+                className="mx-3 mr-0 cursor-pointer"
                 alt="drop down menu"
                 onClick={() => setDropDown((prevState) => !prevState)}
               />

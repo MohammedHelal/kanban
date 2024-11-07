@@ -84,10 +84,10 @@ export default function TaskInfoModal() {
   }
 
   return (
-    <div className="relative min-w-[350px]">
+    <div className="relative md:min-w-[350px]">
       <button
         type="reset"
-        className="block ml-auto -mr-12 -mt-12"
+        className="block ml-auto -mr-6 md:-mr-12 -mt-6 md:-mt-12"
         onClick={() => {
           setCurrentTask({});
           closeTaskInfoModal();

@@ -21,8 +21,8 @@ option {
 :root {
   font-family: "Plus Jakarta Sans", system-ui, Avenir, Helvetica, Arial,
     sans-serif;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   line-height: 23px;
   color: var(--color-black);
 
@@ -170,4 +170,53 @@ section > div {
 .create-new-modal:hover .svg-img {
   filter: invert(55%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%)
     contrast(5000%);
+}
+
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    margin: 0.67em 0;
+    text-wrap: wrap;
+  }
+
+  h2 {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 23px;
+    margin: 0.83em 0;
+    text-wrap: wrap;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 19px;
+    margin: 1em 0;
+    text-wrap: wrap;
+  }
+
+  h4 {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 15px;
+    letter-spacing: 2.4px;
+    margin: 1.33em 0;
+    color: var(--color-platinum);
+    text-wrap: wrap;
+  }
+
+  button {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .L {
+    font-size: 12px;
+  }
+
+  .S {
+    font-size: 8px;
+  }
 }

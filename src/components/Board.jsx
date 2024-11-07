@@ -62,7 +62,7 @@ export default function Board() {
     >
       <div
         className={`relative p-6 pt-[100px] flex ${
-          sidebar ? "w-[calc(100vw - 300px)]" : "w-full"
+          sidebar ? "min-w-[calc(100vw - 300px)]" : ""
         }`}
       >
         {boardColumns.length > 0 &&
@@ -121,7 +121,7 @@ export default function Board() {
           })}
         {boardColumns.length > 0 && (
           <div
-            className="w-[280px] mt-[64px] mr-6 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
+            className="w-[280px] mt-[64px] mr-12 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
             onClick={async () => {
               let columnsData = await fetchABoardsDetails(currentBoard);
 
@@ -132,7 +132,9 @@ export default function Board() {
               });
             }}
           >
-            <h2 className="text-darkPurple">+ Add New Column</h2>
+            <h2 className="text-darkPurple w-[250px] m-[15px]">
+              + Add New Column
+            </h2>
           </div>
         )}
       </div>
