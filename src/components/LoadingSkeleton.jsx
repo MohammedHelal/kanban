@@ -29,7 +29,7 @@ export default function LoadingSkeleton() {
       <div
         className={`relative h-screen m-trans md:ml-[250px] p-6 pt-[112.6px] scroll-m-0 bg-greyBlue`}
       >
-        <div className="flex gap-6 h-full">
+        <div className="flex gap-12 h-full">
           <ColumnSkeleton />
           <ColumnSkeleton />
           <ColumnSkeleton />
