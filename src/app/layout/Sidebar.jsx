@@ -43,7 +43,7 @@ function Sidebar({ boardData }) {
   return (
     <>
       <aside
-        className={`sidebar w-[250px] h-screen absolute top-0 left-0 flex flex-col justify-between bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
+        className={`sidebar w-[250px] h-dvh md:h-screen absolute top-0 left-0 flex flex-col justify-between bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
           sidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
