@@ -11,7 +11,6 @@ export default function TaskModal() {
   const {
     currentBoard,
     boardColumns,
-    isBoardChange,
     editTask,
     setTasks,
     subtasks,
@@ -134,7 +133,6 @@ export default function TaskModal() {
     setEditTask({});
     closeTaskModal();
     closeTaskInfoModal();
-    isBoardChange(true);
   }
 
   return (

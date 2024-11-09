@@ -12,7 +12,7 @@ import cross from "@/src/assets/icon-cross.svg";
 import Image from "next/image";
 
 function Header() {
-  const { openTaskModal, openBoardModal, openDeleteBoardModal } =
+  const { loading, openTaskModal, openBoardModal, openDeleteBoardModal } =
     useContext(ModalContext);
   const { currentBoard, setEditBoard } = useContext(BoardTaskContext);
   const [dropDown, setDropDown] = useState(false);

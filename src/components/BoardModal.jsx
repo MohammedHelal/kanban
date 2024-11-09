@@ -14,7 +14,6 @@ export default function BoardModal() {
   const { closeBoardModal } = useContext(ModalContext);
   const {
     currentBoard,
-    isBoardChange,
     editBoard,
     setEditBoard,
     setCurrentBoard,
@@ -109,7 +108,6 @@ export default function BoardModal() {
     setTitle("");
     setEditBoard({});
     closeBoardModal();
-    isBoardChange(true);
   }
 
   return (

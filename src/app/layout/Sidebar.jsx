@@ -6,9 +6,6 @@ import { BoardTaskContext } from "@/src/store/board-task-context";
 import { SidebarContext } from "@/src/store/sidebar-context";
 import { fetchABoardsDetails, fetchTasksData } from "@/src/util/server-actions";
 import logo from "@/src/assets/logo-dark.svg";
-
-import show from "@/src/assets/icon-show-sidebar.svg";
-import hide from "@/src/assets/icon-hide-sidebar.svg";
 import board from "@/src/assets/icon-board.svg";
 import Image from "next/image";
 
@@ -16,10 +13,15 @@ import PropTypes from "prop-types";
 
 function Sidebar({ boardData }) {
   const { openBoardModal } = useContext(ModalContext);
-  const { currentBoard, setCurrentBoard, setBoardColumns, setTasks } =
-    useContext(BoardTaskContext);
+  const {
+    currentBoard,
+    setCurrentBoard,
+    setBoardColumns,
+    setTasks,
+    loading,
+    setLoading,
+  } = useContext(BoardTaskContext);
   const { sidebar, hideSidebar, showSidebar } = useContext(SidebarContext);
-
   const [boards, setBoards] = useState([]);
 
   useEffect(() => {
@@ -53,8 +55,13 @@ function Sidebar({ boardData }) {
               <div key={i} className="flex items-center mb-1">
                 <button
                   onClick={async () => {
+                    setLoading(true);
                     let columnsData = await fetchABoardsDetails(boardName);
                     let taskData = await fetchTasksData(boardName);
+
+                    setTimeout(() => {
+                      setLoading(false);
+                    }, 5000);
 
                     setCurrentBoard(boardName);
                     setBoardColumns(columnsData);

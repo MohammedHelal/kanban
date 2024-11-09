@@ -26,12 +26,20 @@ export const theme = {
 
       platinum: "#828fa3",
       greyBlue: "#e4ebfa",
+      darkGreyBlue: "#cedbfb",
 
       light: "#f4f7fd",
       white: "#ffffff",
 
       orange: "#ea5555",
       lightOrange: "#ff9898",
+    },
+    keyframes: {
+      shimmer: {
+        "100%": {
+          transform: "translateX(100%)",
+        },
+      },
     },
   },
 };

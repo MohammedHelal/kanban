@@ -1,5 +1,5 @@
 import Sidebar from "./layout/Sidebar";
-import Board from "../components/Board";
+import Main from "../components/Main";
 import Header from "./layout/Header";
 import ModalsContainer from "../util/ModalsContainer";
 import { fetchBoardData } from "../util/server-actions";
@@ -11,7 +11,7 @@ export default async function Home() {
     <>
       <Header />
       <Sidebar boardData={boardData} />
-      <Board />
+      <Main />
       <ModalsContainer />
     </>
   );

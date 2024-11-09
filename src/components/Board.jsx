@@ -18,8 +18,9 @@ export default function Board() {
     setEditBoard,
   } = useContext(BoardTaskContext);
   const { sidebar } = useContext(SidebarContext);
-  const sidebarClasses = useSidebarClasses(true);
   const [taskNumber, setTaskNumber] = useState({});
+
+  const sidebarClasses = useSidebarClasses(true);
 
   useEffect(() => {
     tasks.map((task) => {
@@ -121,7 +122,7 @@ export default function Board() {
           })}
         {boardColumns.length > 0 && (
           <div
-            className="w-[280px] mt-[64px] mr-12 rounded-lg text-center bg-[#c9d4ed] hover:bg-[#ffffff5a] cursor-pointer"
+            className="w-[280px] mt-[64px] mr-12 rounded-lg text-center bg-[#cedbfb] hover:bg-[#c9d4ed] cursor-pointer"
             onClick={async () => {
               let columnsData = await fetchABoardsDetails(currentBoard);
 

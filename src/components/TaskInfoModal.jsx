@@ -26,7 +26,6 @@ export default function TaskInfoModal() {
     setCurrentTask,
     boardColumns,
     currentBoard,
-    isBoardChange,
     setEditTask,
   } = useContext(BoardTaskContext);
 
@@ -59,7 +58,6 @@ export default function TaskInfoModal() {
     const currentTask = tasks.find((task) => task["task_id"] === taskId);
 
     setCurrentTask(currentTask);
-    isBoardChange(true);
   }
 
   async function changeSubtaskStatus(statusId, status, taskId) {

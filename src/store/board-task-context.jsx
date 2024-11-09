@@ -4,8 +4,8 @@ import { useState, useEffect, createContext } from "react";
 import PropTypes from "prop-types";
 
 export const BoardTaskContext = createContext({
-  isChanged: false,
-  isBoardChange: () => {},
+  loading: false,
+  setLoading: () => {},
   currentBoard: "",
   setCurrentBoard: () => {},
   boardColumns: [],
@@ -24,7 +24,7 @@ export const BoardTaskContext = createContext({
 
 export default function BoardTaskContextProvider({ children }) {
   // tracks if the there are any changes to the board/tasks
-  const [isChanged, setIsChanged] = useState(false);
+  const [loading, setLoading] = useState(false);
   // specifies the current board and the columns, tasks as well as the current selected task if any
   const [currentBoard, setCurrentBoard] = useState("");
   const [boardColumns, setBoardColumns] = useState([]);
@@ -36,8 +36,8 @@ export default function BoardTaskContextProvider({ children }) {
   const [editTask, setEditTask] = useState({});
 
   const boardTaskCtx = {
-    isChanged: isChanged,
-    isBoardChange: setIsChanged,
+    loading: loading,
+    setLoading: setLoading,
     currentBoard: currentBoard,
     setCurrentBoard: setCurrentBoard,
     boardColumns: boardColumns,
