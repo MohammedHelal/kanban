@@ -41,7 +41,7 @@ function Sidebar({ boardData }) {
   return (
     <>
       <aside
-        className={`sidebar absolute w-[250px] top-0 left-0 flex flex-col justify-between h-screen bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
+        className={`sidebar w-[250px] h-screen absolute top-0 left-0 flex flex-col justify-between bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
           sidebar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -101,6 +101,7 @@ function Sidebar({ boardData }) {
         className={`${
           sidebar ? "block md:hidden" : "hidden"
         }  absolute top-0 bottom-0 left-0 right-0 bg-magnumGrey/50 z-10`}
+        onClick={hideSidebar}
       ></div>
     </>
   );
