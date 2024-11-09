@@ -23,6 +23,7 @@ function Sidebar({ boardData }) {
   } = useContext(BoardTaskContext);
   const { sidebar, hideSidebar, showSidebar } = useContext(SidebarContext);
   const [boards, setBoards] = useState([]);
+  const [mobileSidebarHide, setMobileSidebarHide] = useState(false);
 
   useEffect(() => {
     if (boardData) {
@@ -40,11 +41,20 @@ function Sidebar({ boardData }) {
     }
   }, [boardData]);
 
+  useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+    if (mobileSidebarHide && isMobile) hideSidebar();
+  }, [hideSidebar, mobileSidebarHide]);
+
   return (
     <>
       <aside
         className={`sidebar w-[250px] h-dvh md:h-screen absolute top-0 left-0 flex flex-col justify-between bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
-          sidebar ? "translate-x-0" : "-translate-x-full"
+          sidebar && mobileSidebarHide
+            ? "max-[600px]:-translate-x-full"
+            : sidebar && !mobileSidebarHide
+            ? "translate-x-0"
+            : "-translate-x-full"
         }`}
       >
         <div id="boards" className={`my-9 mx-0`}>
@@ -56,6 +66,7 @@ function Sidebar({ boardData }) {
                 <button
                   onClick={async () => {
                     setLoading(true);
+                    setMobileSidebarHide(true);
                     let columnsData = await fetchABoardsDetails(boardName);
                     let taskData = await fetchTasksData(boardName);
 
@@ -96,7 +107,10 @@ function Sidebar({ boardData }) {
         {!sidebar && (
           <button
             className={`absolute bottom-16 -right-[42px] bg-darkPurple text-white hover:bg-darkerPurple my-6 px-4 py-3 rounded-r-full rounded-l-none`}
-            onClick={showSidebar}
+            onClick={() => {
+              setMobileSidebarHide(false);
+              showSidebar();
+            }}
           >
             <i className="fa-regular fa-eye fa-lg"></i>
           </button>
@@ -104,7 +118,7 @@ function Sidebar({ boardData }) {
       </aside>
       <div
         className={`${
-          sidebar ? "block md:hidden" : "hidden"
+          sidebar && !mobileSidebarHide ? "block md:hidden" : "hidden"
         }  absolute top-0 bottom-0 left-0 right-0 bg-magnumGrey/50 z-10`}
         onClick={hideSidebar}
       ></div>
