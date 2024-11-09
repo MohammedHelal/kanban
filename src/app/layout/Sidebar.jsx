@@ -59,7 +59,9 @@ function Sidebar({ boardData }) {
                     let columnsData = await fetchABoardsDetails(boardName);
                     let taskData = await fetchTasksData(boardName);
 
-                    setLoading(false);
+                    setTimeout(() => {
+                      setLoading(false);
+                    }, 5000);
 
                     setCurrentBoard(boardName);
                     setBoardColumns(columnsData);
