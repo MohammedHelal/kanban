@@ -1,11 +1,24 @@
+"use client";
 import Board from "./Board";
 import Header from "./Header";
+import LoadingSkeleton from "@/src/ui/LoadingSkeleton";
 
-export default async function Page() {
+import { useContext } from "react";
+import { BoardTaskContext } from "../store/board-task-context";
+
+export default function Page() {
+  const { loading } = useContext(BoardTaskContext);
+
   return (
     <>
-      <Header />
-      <Board />
+      {loading ? (
+        <LoadingSkeleton />
+      ) : (
+        <>
+          <Header />
+          <Board />
+        </>
+      )}
     </>
   );
 }

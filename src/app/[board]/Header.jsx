@@ -5,8 +5,7 @@ import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import { fetchABoardsDetails } from "@/src/lib/server-actions";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
-import logo from "@/src/assets/logo-dark.svg";
-import logoMobile from "@/src/assets/logo-mobile.svg";
+import Logo from "@/src/ui/Logo";
 import cross from "@/src/assets/icon-cross.svg";
 
 import Image from "next/image";
@@ -21,12 +20,7 @@ function Header() {
     <header
       className={`absolute left-0 right-0 w-full h-[88.6px] p-0 flex items-center shadow-lg bg-white z-10`}
     >
-      <div className="hidden md:flex items-center w-[250px] h-full border-r-[1px] border-greyBlue">
-        <Image src={logo} className="ml-[20px] mb-[5px]" alt="Logo" priority />
-      </div>
-      <div className="md:hidden flex items-center px-[20px] h-full border-r-[1px] border-greyBlue">
-        <Image src={logoMobile} className="" alt="Logo" priority />
-      </div>
+      <Logo />
       <div
         className={`w-full md:w-[calc(100vw-250px)] navbar m-trans p-6 flex items-center justify-between`}
       >
