@@ -4,7 +4,9 @@ import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import { SidebarContext } from "@/src/store/sidebar-context";
-import { fetchABoardsDetails, fetchTasksData } from "@/src/util/server-actions";
+import { fetchABoardsDetails, fetchTasksData } from "@/src/lib/server-actions";
+
+import Link from "next/link";
 import logo from "@/src/assets/logo-dark.svg";
 import board from "@/src/assets/icon-board.svg";
 import Image from "next/image";
@@ -49,7 +51,7 @@ function Sidebar({ boardData }) {
   return (
     <>
       <aside
-        className={`sidebar w-[250px] h-dvh md:h-screen absolute top-0 left-0 flex flex-col justify-between bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
+        className={`sidebar w-[250px] h-dvh absolute top-0 left-0 flex flex-col justify-between bg-white border-r-[1px] border-greyBlue z-20 px-6 ${
           sidebar && mobileSidebarHide
             ? "max-[600px]:-translate-x-full"
             : sidebar && !mobileSidebarHide
@@ -63,10 +65,12 @@ function Sidebar({ boardData }) {
             <h4 className="">ALL BOARDS ({boards.length})</h4>
             {boards.map((boardName, i) => (
               <div key={i} className="flex items-center mb-1">
-                <button
+                <Link
+                  href={`/${boardName.replace(/\s+/g, "-").toLowerCase()}`}
                   onClick={async () => {
                     setLoading(true);
                     setMobileSidebarHide(true);
+
                     let columnsData = await fetchABoardsDetails(boardName);
                     let taskData = await fetchTasksData(boardName);
 
@@ -84,7 +88,7 @@ function Sidebar({ boardData }) {
                 >
                   <Image src={board} className="board inline mr-6" alt="" />{" "}
                   {boardName}
-                </button>
+                </Link>
               </div>
             ))}
             <button

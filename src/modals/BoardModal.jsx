@@ -8,7 +8,7 @@ import {
   fetchABoardsDetails,
   fetchTasksOfColumnData,
   fetchTasksData,
-} from "../util/server-actions";
+} from "../lib/server-actions";
 
 export default function BoardModal() {
   const { closeBoardModal } = useContext(ModalContext);

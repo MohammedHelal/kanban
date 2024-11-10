@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { BoardTaskContext } from "../store/board-task-context";
 import { ModalContext } from "../store/modal-context";
+import { deleteTask } from "../lib/actions";
 
 function DeleteTaskModal() {
   const { currentBoard, currentTask, setTasks } = useContext(BoardTaskContext);

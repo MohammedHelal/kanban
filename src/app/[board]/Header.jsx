@@ -3,7 +3,7 @@
 import { useContext, useState } from "react";
 import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
-import { fetchABoardsDetails } from "@/src/util/server-actions";
+import { fetchABoardsDetails } from "@/src/lib/server-actions";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
 import logo from "@/src/assets/logo-dark.svg";
 import logoMobile from "@/src/assets/logo-mobile.svg";

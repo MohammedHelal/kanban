@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, createContext } from "react";
+import { useState, createContext } from "react";
 import PropTypes from "prop-types";
 
 export const BoardTaskContext = createContext({

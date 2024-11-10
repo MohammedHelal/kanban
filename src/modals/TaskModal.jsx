@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import { BoardTaskContext } from "../store/board-task-context";
 import { createTask, updateTask } from "../lib/actions";
-import { fetchTasksData } from "../util/server-actions";
+import { fetchTasksData } from "../lib/server-actions";
 
 export default function TaskModal() {
   const { closeTaskModal, closeTaskInfoModal } = useContext(ModalContext);

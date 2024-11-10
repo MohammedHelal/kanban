@@ -1,11 +1,13 @@
 "use client";
 
 import { useContext, useState, useEffect } from "react";
-import { ModalContext } from "../store/modal-context";
-import { BoardTaskContext } from "../store/board-task-context";
-import { SidebarContext } from "../store/sidebar-context";
-import { fetchSubTasksData, fetchABoardsDetails } from "../util/server-actions";
-import useSidebarClasses from "../util/useSidebarClasses";
+import { ModalContext } from "@/src/store/modal-context";
+import { BoardTaskContext } from "@/src/store/board-task-context";
+import { SidebarContext } from "@/src/store/sidebar-context";
+import {
+  fetchSubTasksData,
+  fetchABoardsDetails,
+} from "@/src/lib/server-actions";
 
 export default function Board() {
   const { openTaskInfoModal, openBoardModal } = useContext(ModalContext);
@@ -19,8 +21,6 @@ export default function Board() {
   } = useContext(BoardTaskContext);
   const { sidebar } = useContext(SidebarContext);
   const [taskNumber, setTaskNumber] = useState({});
-
-  const sidebarClasses = useSidebarClasses(true);
 
   useEffect(() => {
     tasks.map((task) => {
@@ -59,7 +59,9 @@ export default function Board() {
 
   return (
     <main
-      className={`m-trans h-screen scroll-auto overflow-auto ${sidebarClasses} scroll-m-0 bg-greyBlue`}
+      className={`m-trans h-screen scroll-auto overflow-auto ${
+        sidebar ? `md:ml-[250px]` : "ml-0"
+      } scroll-m-0 bg-greyBlue`}
     >
       <div
         className={`relative p-6 pt-[100px] flex ${

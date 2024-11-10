@@ -3,11 +3,11 @@
 import { useContext } from "react";
 import { ModalContext } from "../store/modal-context";
 import Modal from "./Modal";
-import BoardModal from "../components/BoardModal";
-import TaskModal from "../components/TaskModal";
-import TaskInfoModal from "../components/TaskInfoModal";
-import DeleteBoardModal from "../components/DeleteBoardModal";
-import DeleteTaskModal from "../components/DeleteTaskModal";
+import BoardModal from "./BoardModal";
+import TaskModal from "./TaskModal";
+import TaskInfoModal from "./TaskInfoModal";
+import DeleteBoardModal from "./DeleteBoardModal";
+import DeleteTaskModal from "./DeleteTaskModal";
 
 function ModalsContainer() {
   const {

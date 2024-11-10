@@ -6,12 +6,8 @@ import {
   fetchTaskData,
   fetchTaskOfColumnData,
   fetchSubTaskData,
-} from "../lib/data";
-import {
-  changeSubtaskStatus,
-  changetaskColumn,
-  deleteTask,
-} from "../lib/actions";
+} from "./data";
+import { changeSubtaskStatus, changetaskColumn } from "./actions";
 
 export async function fetchBoardData() {
   "use server";

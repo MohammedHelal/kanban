@@ -68,12 +68,15 @@ export async function deleteBoard(boardName, columns, tasks) {
       const id = columns[i]["column_id"];
       //await sql`DELETE FROM tasks WHERE column_id=${id}`;
     }
-    console.log("board deletion disabled for now!");
+
     //await sql`DELETE FROM boards WHERE board_name=${boardName}`;
+
+    console.log("Board deletion disabled for now!");
+
     revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to create board.", error);
+    throw new Error("Failed to delete board.", error);
   }
 }
 
@@ -176,13 +179,15 @@ export async function changetaskColumn(columnId, taskId) {
 
 export async function deleteTask(taskId) {
   try {
-    await sql`DELETE FROM subtasks WHERE task_id=${taskId}`;
+    //await sql`DELETE FROM subtasks WHERE task_id=${taskId}`;
 
-    await sql`DELETE FROM tasks WHERE task_id=${taskId}`;
+    //await sql`DELETE FROM tasks WHERE task_id=${taskId}`;
+
+    console.log("Task deletion disabled for now!");
 
     revalidatePath("/");
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to update task", error);
+    throw new Error("Failed to delete task", error);
   }
 }

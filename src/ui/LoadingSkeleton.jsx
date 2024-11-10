@@ -1,8 +1,10 @@
 // Loading animation
+
 import logo from "@/src/assets/logo-dark.svg";
 import logoMobile from "@/src/assets/logo-mobile.svg";
-import Image from "next/image";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
+
+import Image from "next/image";
 
 const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-greyBlue/60 before:to-transparent";
@@ -24,6 +26,7 @@ export function ColumnSkeleton() {
     </div>
   );
 }
+
 export function HeaderSkeleton() {
   return (
     <header

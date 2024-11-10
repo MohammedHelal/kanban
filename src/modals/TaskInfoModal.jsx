@@ -13,7 +13,7 @@ import {
   fetchSubTasksData,
   changeTasksColumn,
   fetchTasksData,
-} from "../util/server-actions";
+} from "../lib/server-actions";
 
 export default function TaskInfoModal() {
   const { openTaskModal, closeTaskInfoModal, openDeleteTaskModal } =
@@ -94,7 +94,7 @@ export default function TaskInfoModal() {
         <i className="task-info-close fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
       <div className="flex justify-between items-start">
-        <h1>{task["task_title"]}</h1>
+        <h1 className="w-5/6">{task["task_title"]}</h1>
         <Image
           src={dropDown ? cross : more}
           className="my-[20px] cursor-pointer z-20"
