@@ -31,6 +31,7 @@ export default function TaskInfoModal() {
 
   const [dropDown, setDropDown] = useState(false);
   const [taskColumn, setTaskColumn] = useState("");
+  const [subtasksInput, setSubtasksInput] = useState({});
 
   useEffect(() => {
     if (boardColumns.length > 0) {
@@ -42,7 +43,15 @@ export default function TaskInfoModal() {
         setTaskColumn(columnName["column_name"]);
       }
     }
-  }, [boardColumns, task]);
+
+    if (subtasks.length > 0) {
+      let obj = {};
+      subtasks.map((subtask) => {
+        obj[subtask["subtask_id"]] = subtask["is_completed"];
+      });
+      setSubtasksInput(obj);
+    }
+  }, [boardColumns, task, subtasks]);
 
   async function changeColumn(e, taskId) {
     const value = e.target.value;
@@ -68,8 +77,6 @@ export default function TaskInfoModal() {
 
     const tasks = await fetchTasksData(currentBoard);
     setTasks(tasks);
-
-    isBoardChange(true);
   }
 
   async function taskDeletionHandler(taskId) {
@@ -143,8 +150,8 @@ export default function TaskInfoModal() {
       {subtasks && (
         <form className="my-6">
           <p className="text-platinum my-3 font-semibold">
-            Subtasks ({task["no_of_completed_subtasks"]} of{" "}
-            {task["no_of_subtasks"]})
+            Subtasks ({Object.values(subtasksInput).filter(Boolean).length} of{" "}
+            {Object.values(subtasksInput).length})
           </p>
           {subtasks.map((subtask) => (
             <div
@@ -156,13 +163,21 @@ export default function TaskInfoModal() {
                 id={`subtask["subtask_id"]`}
                 name={`subtask["subtask_id"]`}
                 onChange={() => {
+                  setSubtasksInput((prevState) => {
+                    return {
+                      ...prevState,
+                      [subtask["subtask_id"]]:
+                        !subtasksInput[subtask["subtask_id"]],
+                    };
+                  });
+
                   changeSubtaskStatus(
                     subtask["subtask_id"],
                     subtask["is_completed"],
                     task["task_id"]
                   );
                 }}
-                checked={subtask["is_completed"]}
+                checked={subtasksInput[subtask["subtask_id"]] || false}
               />
               <label
                 htmlFor={`subtask["subtask_id"]`}
