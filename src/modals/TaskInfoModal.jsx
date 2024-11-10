@@ -182,7 +182,8 @@ export default function TaskInfoModal() {
               <label
                 htmlFor={`subtask["subtask_id"]`}
                 className={`ml-3 ${
-                  subtask["is_completed"] && "line-through text-platinum"
+                  subtasksInput[subtask["subtask_id"]] &&
+                  "line-through text-platinum"
                 }`}
               >
                 {subtask["subtask_title"]}
