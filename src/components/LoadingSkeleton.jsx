@@ -1,4 +1,6 @@
 // Loading animation
+import logo from "@/src/assets/logo-dark.svg";
+import logoMobile from "@/src/assets/logo-mobile.svg";
 import Image from "next/image";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
 
@@ -22,11 +24,43 @@ export function ColumnSkeleton() {
     </div>
   );
 }
+export function HeaderSkeleton() {
+  return (
+    <header
+      className={`absolute left-0 right-0 w-full h-[88.6px] p-0 flex items-center shadow-lg bg-white z-10`}
+    >
+      <div className="hidden md:flex items-center w-[250px] h-full border-r-[1px] border-greyBlue">
+        <Image src={logo} className="ml-[20px] mb-[5px]" alt="Logo" priority />
+      </div>
+      <div className="md:hidden flex items-center px-[20px] h-full border-r-[1px] border-greyBlue">
+        <Image src={logoMobile} className="" alt="Logo" priority />
+      </div>
+      <div
+        className={`w-full md:w-[calc(100vw-250px)] p-6 flex justify-between items-center overflow-hidden md:col-span-4`}
+      >
+        <div
+          className={`${shimmerWhite} relative h-12 w-32 md:w-52 rounded-md bg-greyBlue`}
+        />
+        <div className="relative flex justify-between items-center min-w-1/5">
+          <div
+            className={`${shimmerWhite} relative h-12 w-32 md:w-52 mr-3 rounded-md bg-greyBlue`}
+          />
+          <Image
+            src={more}
+            className="mx-3 mr-0 cursor-pointer"
+            alt="drop down menu"
+          />
+        </div>
+      </div>
+    </header>
+  );
+}
 
 export default function LoadingSkeleton() {
   return (
     <>
-      <div
+      <HeaderSkeleton />
+      <main
         className={`relative h-screen m-trans md:ml-[250px] p-6 pt-[112.6px] scroll-m-0 bg-greyBlue`}
       >
         <div className="flex gap-12 h-full">
@@ -35,29 +69,7 @@ export default function LoadingSkeleton() {
           <ColumnSkeleton />
           <ColumnSkeleton />
         </div>
-      </div>
+      </main>
     </>
-  );
-}
-
-export function HeaderSkeleton() {
-  return (
-    <div
-      className={`w-full md:w-[calc(100vw-250px)] p-6 flex justify-between items-center overflow-hidden md:col-span-4`}
-    >
-      <div
-        className={`${shimmerWhite} relative h-12 w-32 md:w-52 rounded-md bg-greyBlue`}
-      />
-      <div className="relative flex justify-between items-center min-w-1/5">
-        <div
-          className={`${shimmerWhite} relative h-12 w-32 md:w-52 mr-3 rounded-md bg-greyBlue`}
-        />
-        <Image
-          src={more}
-          className="mx-3 mr-0 cursor-pointer"
-          alt="drop down menu"
-        />
-      </div>
-    </div>
   );
 }
