@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export const content = [
   "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-  "./src/util/**/*.{js,ts,jsx,tsx,mdx}",
+  "./src/modals/**/*.{js,ts,jsx,tsx,mdx}",
+  "./src/ui/**/*.{js,ts,jsx,tsx,mdx}",
   "./src/store/**/*.{js,ts,jsx,tsx,mdx}",
   "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 ];
