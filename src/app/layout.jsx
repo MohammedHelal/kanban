@@ -19,14 +19,15 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div id="modal"></div>
-        <div id="root">
-          <Providers>
+        <Providers>
+          <div id="modal">
+            <ModalsContainer />
+          </div>
+          <div id="root">
             <Sidebar boardData={boardData} />
             {children}
-            <ModalsContainer />
-          </Providers>
-        </div>
+          </div>
+        </Providers>
         <Script
           src="https://kit.fontawesome.com/67979852c7.js"
           crossOrigin="anonymous"

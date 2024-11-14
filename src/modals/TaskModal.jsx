@@ -164,22 +164,22 @@ export default function TaskModal() {
       >
         <i className="task-close fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
-      <h2 className="mt-0 mb-8">Add New Task</h2>
+      <h2 className="mt-0 mb-8 dark:text-light">Add New Task</h2>
       <fieldset className="my-6">
-        <label htmlFor="title" className="block text-[#4f6492]">
+        <label htmlFor="title" className="block text-platinum">
           Title
         </label>
         <input
           id="title"
           name="title"
-          className="w-full border-2 p-1 pl-3 rounded-lg"
+          className="w-full border-[1px] p-1 pl-3 rounded-md dark:border-grey dark:bg-magnumGrey dark:text-light"
           placeholder="eg. Take Coffee Break"
           value={title}
           onChange={changeHandler}
         />
       </fieldset>
       <fieldset className="my-6">
-        <label htmlFor="description" className="block text-[#4f6492]">
+        <label htmlFor="description" className="block text-platinum">
           Description
         </label>
         <textarea
@@ -187,13 +187,13 @@ export default function TaskModal() {
           name="description"
           rows="4"
           placeholder="eg. It's always good to take a break. This 15 minute break will recharge the batteries a little"
-          className="w-full border-2 p-2 pl-3 rounded-lg"
+          className="w-full border-[1px] p-2 pl-3 rounded-md dark:border-grey dark:bg-magnumGrey dark:text-light"
           value={description}
           onChange={changeHandler}
         />
       </fieldset>
       <fieldset className="my-6">
-        <label className="block text-[#4f6492] -mb-3">Subtasks</label>
+        <label className="block text-platinum -mb-3">Subtasks</label>
         {subtaskState.map((input, i) => {
           if (!/delete/.exec(input["subtask_title"])) {
             return (
@@ -208,15 +208,16 @@ export default function TaskModal() {
                       ? "eg. Drink coffee & smile"
                       : "Next subtask..."
                   }`}
-                  className={`w-full border-2 ${
-                    subtaskDelete === `subtask${input["subtask_id"]}` &&
-                    "border-orange"
-                  } p-1 pl-3 rounded-l-lg`}
+                  className={`w-full border-[1px] border-r-0  ${
+                    subtaskDelete === `subtask${input["subtask_id"]}`
+                      ? "border-orange"
+                      : "dark:border-grey"
+                  } p-1 pl-3 rounded-l-lg dark:bg-magnumGrey dark:text-light`}
                   value={input["subtask_title"]}
                   onChange={(e) => changeHandler(e, input["subtask_id"])}
                 />
                 <i
-                  className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 border-2 rounded-r-lg hover:border-orange text-[#4f6492] hover:bg-orange hover:text-white cursor-pointer"
+                  className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 dark:bg-magnumGrey border-[1px] dark:border-grey rounded-r-lg hover:border-orange text-platinum hover:bg-orange hover:text-white cursor-pointer"
                   onClick={() => {
                     if (subtaskState.length > 1) {
                       let array = [...subtaskState];
@@ -264,18 +265,22 @@ export default function TaskModal() {
         </button>
       </fieldset>
       <fieldset className="my-6">
-        <label htmlFor="status" className="block text-[#4f6492]">
+        <label htmlFor="status" className="block text-platinum">
           Status
         </label>
         <select
           id="status"
           name="status"
-          className="w-full bg-inherit border-2 rounded-lg p-2"
+          className="w-full bg-inherit dark:bg-magnumGrey text-magnumGrey border-[1px] rounded-lg p-2 dark:border-grey dark:text-light cursor-pointer"
           value={status}
           onChange={changeHandler}
         >
           {boardColumns.map((column) => (
-            <option key={column["column_id"]} value={column["column_name"]}>
+            <option
+              className=""
+              key={column["column_id"]}
+              value={column["column_name"]}
+            >
               {column["column_name"]}
             </option>
           ))}

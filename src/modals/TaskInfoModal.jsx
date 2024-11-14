@@ -101,7 +101,7 @@ export default function TaskInfoModal() {
         <i className="task-info-close fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
       <div className="flex justify-between items-start">
-        <h1 className="w-5/6">{task["task_title"]}</h1>
+        <h1 className="w-5/6 dark:text-white">{task["task_title"]}</h1>
         <Image
           src={dropDown ? cross : more}
           className="my-[20px] cursor-pointer z-20"
@@ -114,10 +114,10 @@ export default function TaskInfoModal() {
               className="absolute top-0 right-0 bottom-0 left-0 z-10 rounded-lg"
               onClick={() => setDropDown(false)}
             ></div>
-            <ul className="absolute top-[80px] right-[0px]  bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20 shadow-md">
+            <ul className="absolute top-[80px] right-[0px]  bg-magnumGrey border-[1px] border-platinum p-3 shadow-2xl shadow-slate-800 rounded-lg z-20 shadow-md">
               <li>
                 <a
-                  className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-platinum text-white cursor-pointer"
+                  className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-grey text-white cursor-pointer"
                   onClick={() => {
                     setEditTask(task);
                     setDropDown(false);
@@ -156,7 +156,7 @@ export default function TaskInfoModal() {
           {subtasks.map((subtask) => (
             <div
               key={subtask["subtask_id"]}
-              className="py-1 px-3 my-2 bg-greyBlue text-wrap"
+              className="py-1 px-3 my-2 bg-greyBlue dark:bg-magnumGrey rounded-md text-wrap"
             >
               <input
                 type="checkbox"
@@ -181,7 +181,7 @@ export default function TaskInfoModal() {
               />
               <label
                 htmlFor={`subtask["subtask_id"]`}
-                className={`ml-3 ${
+                className={`ml-3 dark:text-light ${
                   subtasksInput[subtask["subtask_id"]] &&
                   "line-through text-platinum"
                 }`}
@@ -193,10 +193,11 @@ export default function TaskInfoModal() {
         </form>
       )}
       <p className="text-platinum my-3 font-semibold">Current Status</p>
+
       <select
         id="status"
         name="status"
-        className="w-full bg-inherit border-2 rounded-sm p-3 px-4"
+        className="w-full bg-inherit dark: border-[1px] rounded-md py-2 px-4 dark:text-white cursor-pointer"
         value={taskColumn}
         onChange={(e) => changeColumn(e, task["task_id"])}
       >

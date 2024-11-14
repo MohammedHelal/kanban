@@ -15,7 +15,10 @@ option {
   font-size: 13px;
   font-weight: 500;
   line-height: 23px;
-  color: var(--color-black);
+}
+
+option {
+  color: var(--color-magnum-grey);
 }
 
 :root {
@@ -165,11 +168,6 @@ section > div {
 
 .new-column {
   margin-top: calc((100vh - 112.6px) / 2);
-}
-
-.create-new-modal:hover .svg-img {
-  filter: invert(55%) sepia(0%) saturate(0%) hue-rotate(180deg) brightness(100%)
-    contrast(5000%);
 }
 
 @media screen and (max-width: 768px) {

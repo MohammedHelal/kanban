@@ -61,11 +61,11 @@ export default function Board() {
     <main
       className={`m-trans h-screen scroll-auto overflow-auto ${
         sidebar ? `md:ml-[250px]` : "ml-0"
-      } scroll-m-0 bg-greyBlue`}
+      } scroll-m-0 bg-greyBlue dark:bg-magnumGrey`}
     >
       <div
-        className={`relative p-6 pt-[100px] flex ${
-          sidebar ? "min-w-[calc(100vw - 300px)]" : ""
+        className={`relative p-6 pt-[100px] flex min-h-full ${
+          sidebar && "min-w-[calc(100vw - 300px)]"
         }`}
       >
         {boardColumns.length > 0 &&
@@ -73,7 +73,7 @@ export default function Board() {
             return (
               <div
                 key={column["column_id"]}
-                className="w-[280px] mr-12 shrink-0 text-center"
+                className="w-[280px] mr-6 shrink-0 text-center"
               >
                 <div className="flex items-center">
                   <div
@@ -81,7 +81,7 @@ export default function Board() {
                       colorNo[i < 4 ? i : i >= 4 && i < 8 ? i - 4 : i - 8]
                     }`}
                   ></div>
-                  <h4 className="text-left text-[#5d5e75] uppercase tracking-[0.25em] text-base">
+                  <h4 className="text-left text-grey dark:text-platinum uppercase tracking-[0.25em] text-base">
                     <span>
                       {column["column_name"]} (
                       {taskNumber[column["column_id"]]
@@ -97,7 +97,7 @@ export default function Board() {
                       return (
                         <div
                           key={task["task_id"]}
-                          className="bg-white w-full border-[1px] border-white hover:border-[1px] hover:border-platinum rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
+                          className="bg-white dark:bg-darkGrey w-full text-black dark:text-white hover:border-[1px] dark:hover:border-magnumGrey hover:border-platinum rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
                           onClick={async () => {
                             let subtasks = await fetchSubTasksData(
                               task["task_id"]
@@ -108,7 +108,7 @@ export default function Board() {
                             openTaskInfoModal();
                           }}
                         >
-                          <h2 className="text-left mb-2 text-wrap">
+                          <h2 className="text-left mb-2 text-wrap ">
                             {task["task_title"]}
                           </h2>
                           <p className="text-left font-bold text-platinum mb-3.5">
@@ -124,7 +124,7 @@ export default function Board() {
           })}
         {boardColumns.length > 0 && (
           <div
-            className="w-[280px] mt-[64px] mr-12 rounded-lg text-center bg-[#cedbfb] hover:bg-[#c9d4ed] cursor-pointer"
+            className="w-[280px] mt-[60px] mb-3 mr-6 rounded-lg shadow-md text-center bg-darkGreyBlue dark:bg-darkGrey hover:bg-darkGreyBlue dark:hover:bg-grey hover:border-[1px] dark:hover:border-magnumGrey hover:border-platinum cursor-pointer"
             onClick={async () => {
               let columnsData = await fetchABoardsDetails(currentBoard);
 
@@ -135,7 +135,7 @@ export default function Board() {
               });
             }}
           >
-            <h2 className="text-darkPurple w-[250px] m-[15px]">
+            <h2 className="text-darkPurple dark:text-platinum w-[250px] m-[15px]">
               + Add New Column
             </h2>
           </div>

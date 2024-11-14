@@ -22,31 +22,31 @@ function ModalsContainer() {
     <>
       <Modal
         open={boardModal}
-        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 has-[.board-close:hover]:border-orange"
+        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 dark:border-transparent has-[.board-close:hover]:border-orange"
       >
         <BoardModal />
       </Modal>
       <Modal
         open={taskModal}
-        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 has-[.task-close:hover]:border-orange"
+        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2  dark:border-transparent has-[.task-close:hover]:border-orange"
       >
         <TaskModal />
       </Modal>
       <Modal
         open={taskInfoModal}
-        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 has-[.task-info-close:hover]:border-orange"
+        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 dark:border-transparent has-[.task-info-close:hover]:border-orange"
       >
         <TaskInfoModal />
       </Modal>
       <Modal
         open={deleteBoardModal}
-        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2"
+        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 dark:border-grey "
       >
         <DeleteBoardModal />
       </Modal>
       <Modal
         open={deleteTaskModal}
-        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2"
+        className="p-6 md:p-12 pb-8 w-[350px] md:w-[480px] rounded-lg border-2 dark:border-grey "
       >
         <DeleteTaskModal />
       </Modal>

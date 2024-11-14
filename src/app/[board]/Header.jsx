@@ -5,7 +5,8 @@ import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import { fetchABoardsDetails } from "@/src/lib/server-actions";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
-import logo from "@/src/assets/logo-dark.svg";
+import logoLight from "@/src/assets/logo-light.svg";
+import logoDark from "@/src/assets/logo-dark.svg";
 import logoMobile from "@/src/assets/logo-mobile.svg";
 import Logo from "@/src/ui/Logo";
 import cross from "@/src/assets/icon-cross.svg";
@@ -20,14 +21,9 @@ function Header() {
 
   return (
     <header
-      className={`absolute left-0 right-0 w-full h-[88.6px] p-0 flex items-center shadow-lg bg-white z-10`}
+      className={`absolute left-0 right-0 w-full h-[88.6px] p-0 flex dark:bg-darkGrey dark:text-white border-b-[1px] border-greyBlue dark:border-grey items-center shadow-lg bg-white z-10`}
     >
-      <div className="hidden md:flex items-center w-[250px] h-full border-r-[1px] border-greyBlue">
-        <Image src={logo} className="ml-[20px] mb-[5px]" alt="Logo" priority />
-      </div>
-      <div className="md:hidden flex items-center px-[20px] h-full border-r-[1px] border-greyBlue">
-        <Image src={logoMobile} className="" alt="Logo" priority />
-      </div>
+      <Logo />
       <div
         className={`w-full md:w-[calc(100vw-250px)] navbar m-trans p-6 flex items-center justify-between`}
       >
@@ -51,10 +47,10 @@ function Header() {
           )}
           {dropDown && (
             <>
-              <ul className="absolute top-[40px] right-[5px] bg-magnumGrey p-3 shadow-2xl shadow-slate-800 rounded-lg z-20">
+              <ul className="absolute top-[40px] right-[5px] bg-magnumGrey border-[1px] border-platinum p-3 shadow-2xl shadow-slate-800 rounded-lg z-20">
                 <li>
                   <a
-                    className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-platinum text-white cursor-pointer"
+                    className="group block w-full py-1 px-6 text-left rounded-t-lg hover:bg-grey text-white cursor-pointer"
                     onClick={async () => {
                       let columnsData = await fetchABoardsDetails(currentBoard);
 
@@ -70,7 +66,7 @@ function Header() {
                     Edit Board
                   </a>
                 </li>
-                <hr className="" />
+                <hr className="border-platinum" />
                 <li>
                   <a
                     className="group block w-full py-1 px-6 rounded-b-lg text-left hover:bg-orange text-white cursor-pointer"

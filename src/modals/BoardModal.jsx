@@ -129,22 +129,22 @@ export default function BoardModal() {
       >
         <i className="board-close fa-solid fa-x p-3 pr-4 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
-      <h2 className="mt-0 mb-12">Add New Board</h2>
+      <h2 className="mt-0 mb-12 dark:text-white">Add New Board</h2>
       <div className="mb-6">
-        <label htmlFor="title" className="block text-[#4f6492]">
+        <label htmlFor="title" className="block text-platinum">
           Title
         </label>
         <input
           id="title"
           name="title"
-          className="w-full border-2 rounded-lg p-1 pl-3 mt-3"
+          className="w-full border-[1px] rounded-md dark:border-grey dark:bg-magnumGrey dark:text-light p-1 pl-3 mt-3"
           placeholder="eg. Web Design"
           value={title}
           onChange={(e) => changeHandler(e)}
         />
       </div>
       <div className="mb-6">
-        <label className="block text-[#4f6492]">Columns</label>
+        <label className="block text-platinum">Columns</label>
         {cantDeleteColumnError && (
           <p className="py-2 px-3 bg-orange text-white rounded-lg">
             This column contains tasks and so it can&apos;t be deleted
@@ -166,14 +166,16 @@ export default function BoardModal() {
                       ? "eg. Done"
                       : "Next Column"
                   }`}
-                  className={`w-full border-2 rounded-l-lg ${
-                    columnDelete === `column${input.id}` && "border-orange"
-                  } p-1 pl-3`}
+                  className={`w-full border-[1px] rounded-l-lg  ${
+                    columnDelete === `column${input.id}`
+                      ? "border-orange"
+                      : "dark:border-grey"
+                  } p-1 pl-3 dark:bg-magnumGrey dark:text-light`}
                   value={input.columnName}
                   onChange={(e) => changeHandler(e, input.id)}
                 />
                 <i
-                  className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 border-2 rounded-r-lg text-[#4f6492] hover:bg-orange hover:text-white hover:border-orange cursor-pointer"
+                  className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 dark:bg-magnumGrey border-[1px] dark:border-grey rounded-r-lg hover:border-orange text-platinum hover:bg-orange hover:text-white cursor-pointer"
                   onClick={async () => {
                     if (columns.length > 1) {
                       let array = [...columns];
