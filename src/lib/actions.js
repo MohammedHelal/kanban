@@ -61,15 +61,15 @@ export async function deleteBoard(boardName, columns, tasks) {
   try {
     for (let i = 0; i < tasks.length; i++) {
       const id = tasks[i]["task_id"];
-      //await sql`DELETE FROM subtasks WHERE task_id=${id}`;
+      await sql`DELETE FROM subtasks WHERE task_id=${id}`;
     }
 
     for (let i = 0; i < columns.length; i++) {
       const id = columns[i]["column_id"];
-      //await sql`DELETE FROM tasks WHERE column_id=${id}`;
+      await sql`DELETE FROM tasks WHERE column_id=${id}`;
     }
 
-    //await sql`DELETE FROM boards WHERE board_name=${boardName}`;
+    await sql`DELETE FROM boards WHERE board_name=${boardName}`;
 
     console.log("Board deletion disabled for now!");
 
@@ -179,9 +179,9 @@ export async function changetaskColumn(columnId, taskId) {
 
 export async function deleteTask(taskId) {
   try {
-    //await sql`DELETE FROM subtasks WHERE task_id=${taskId}`;
+    await sql`DELETE FROM subtasks WHERE task_id=${taskId}`;
 
-    //await sql`DELETE FROM tasks WHERE task_id=${taskId}`;
+    await sql`DELETE FROM tasks WHERE task_id=${taskId}`;
 
     console.log("Task deletion disabled for now!");
 

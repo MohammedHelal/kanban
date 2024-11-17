@@ -24,7 +24,12 @@ function DeleteTaskModal() {
         &apos; task and its subtasks? This action cannot be reversed.
       </p>
       <div className="flex justify-between items-center mt-6">
-        <button className={`btn-destructive w-[150px]`}>Delete</button>
+        <button
+          className={`btn-destructive w-[150px]`}
+          onClick={taskDeletionHandler}
+        >
+          Delete
+        </button>
         <button
           className={`btn-secondary w-[150px]`}
           onClick={closeDeleteTaskModal}
