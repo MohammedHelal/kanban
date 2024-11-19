@@ -1,18 +1,34 @@
 import { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 import { BoardTaskContext } from "../store/board-task-context";
 import { ModalContext } from "../store/modal-context";
 import { deleteBoard } from "../lib/actions";
 
 function DeleteBoardModal() {
-  const { currentBoard, boardColumns, tasks } = useContext(BoardTaskContext);
+  const {
+    currentBoard,
+    setCurrentBoard,
+    setBoardColumns,
+    setTasks,
+    boardColumns,
+    tasks,
+  } = useContext(BoardTaskContext);
   const { closeDeleteBoardModal } = useContext(ModalContext);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function boardDeletionHandler() {
     setLoading(true);
     await deleteBoard(currentBoard, boardColumns, tasks);
 
+    setCurrentBoard("");
+    setBoardColumns([]);
+    setTasks([]);
+
     setLoading(false);
+
+    closeDeleteBoardModal();
+    router.push("/");
   }
 
   return (
