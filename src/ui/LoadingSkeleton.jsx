@@ -7,7 +7,7 @@ import more from "@/src/assets/icon-vertical-ellipsis.svg";
 import Image from "next/image";
 
 const shimmer =
-  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-greyBlue/60 dark:before:via-grey/60 before:to-transparent";
+  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-greyBlue/60 dark:before:via-magnumGrey/60 before:to-transparent";
 
 const shimmerWhite =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 dark:before:via-darkGrey/60 before:to-transparent";
