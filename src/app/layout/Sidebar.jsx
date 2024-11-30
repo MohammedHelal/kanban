@@ -7,10 +7,6 @@ import { SidebarContext } from "@/src/store/sidebar-context";
 import { fetchABoardsDetails, fetchTasksData } from "@/src/lib/server-actions";
 
 import Link from "next/link";
-import logoLight from "@/src/assets/logo-light.svg";
-import logoDark from "@/src/assets/logo-dark.svg";
-import board from "@/src/assets/icon-board.svg";
-import Image from "next/image";
 
 import PropTypes from "prop-types";
 
