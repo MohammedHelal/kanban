@@ -1,5 +1,6 @@
 import Providers from "./providers";
 import Script from "next/script";
+import Head from "next/head";
 
 import Sidebar from "./layout/Sidebar";
 import ModalsContainer from "../modals/ModalsContainer";
@@ -21,6 +22,9 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en">
+      <Head>
+      <link rel="icon" href="/logo.svg" type="image/x-icon" sizes="16x16">
+      </Head>
       <body>
         <Providers>
           <div id="modal">
