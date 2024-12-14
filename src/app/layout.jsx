@@ -23,7 +23,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head>
-      <link rel="icon" href="/logo.svg" type="image/x-icon" sizes="16x16">
+      <link rel="icon" href="/logo.svg" type="image/x-icon" sizes="16x16" />
       </Head>
       <body>
         <Providers>
