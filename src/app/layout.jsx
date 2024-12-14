@@ -12,7 +12,7 @@ export const metadata = {
   title: "Kanban",
   description: "A kanban board to organize projects and tasks",
   icons: {
-    icon: "@/logo.svg",
+    icon: "@/public/logo.svg",
   },
 };
 
