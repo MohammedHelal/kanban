@@ -373,7 +373,7 @@ export default function TaskModal() {
         </select>
       </fieldset>
       <button className="btn-primary w-full mt-6" type="submit">
-        Add New Task
+        {Object.keys(editTask).length <= 0 ? "Create New Task" : "Edit Task"}
       </button>
     </form>
   );
