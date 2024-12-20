@@ -2,6 +2,8 @@
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 
+
+
 export async function createBoard(board) {
   const title = board.title;
   const columns = board.columns;

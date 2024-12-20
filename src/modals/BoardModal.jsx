@@ -12,14 +12,8 @@ import {
 
 export default function BoardModal() {
   const { closeBoardModal } = useContext(ModalContext);
-  const {
-    currentBoard,
-    editBoard,
-    setEditBoard,
-    setCurrentBoard,
-    setBoardColumns,
-    setTasks,
-  } = useContext(BoardTaskContext);
+  const { currentBoard, editBoard, setEditBoard, setBoardColumns, setTasks } =
+    useContext(BoardTaskContext);
 
   const [title, setTitle] = useState("");
   const [columns, setColumns] = useState([
@@ -28,6 +22,7 @@ export default function BoardModal() {
   ]);
 
   const [columnDelete, setColumnDelete] = useState("");
+  const [titleError, setTitleErrors] = useState(false);
   const [cantDeleteColumnError, setCantDeleteColumnError] = useState(false);
 
   useEffect(() => {
@@ -55,13 +50,11 @@ export default function BoardModal() {
     }
   }, [editBoard]);
 
-  function deleteBoardHandler() {
-    deleteBoard(title);
-  }
-
   function changeHandler(e, id) {
     let inputId = e.target.id;
     let val = e.target.value;
+
+    if (inputId === "title") setTitleErrors(false);
 
     if (inputId === "title") {
       setTitle(val);
@@ -77,37 +70,46 @@ export default function BoardModal() {
     }
   }
 
+  function blurHandler(event) {
+    let inputId = event.target.id;
+    if (inputId === "title" && title === "") setTitleErrors(true);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (editBoard.board) {
-      updateBoard({
-        title: title,
-        columns: columns,
-      });
-
-      if (currentBoard === editBoard.board) {
-        (async () => {
-          let columnsData = await fetchABoardsDetails(editBoard.board);
-          let taskData = await fetchTasksData(editBoard.board);
-
-          setBoardColumns(columnsData);
-          setTasks(taskData);
-        })();
-      }
+    if (title === "") {
+      setTitleErrors(true);
     } else {
-      createBoard({
-        title: title,
-        columns: columns,
-      });
+      if (editBoard.board) {
+        updateBoard({
+          title: title,
+          columns: columns,
+        });
+
+        if (currentBoard === editBoard.board) {
+          (async () => {
+            let columnsData = await fetchABoardsDetails(editBoard.board);
+            let taskData = await fetchTasksData(editBoard.board);
+
+            setBoardColumns(columnsData);
+            setTasks(taskData);
+          })();
+        }
+      } else {
+        createBoard({
+          title: title,
+          columns: columns,
+        });
+      }
+      setColumns([
+        { id: 1, columnName: "" },
+        { id: 2, columnName: "" },
+      ]);
+      setTitle("");
+      setEditBoard({});
+      closeBoardModal();
     }
-    setColumns([
-      { id: 1, columnName: "" },
-      { id: 2, columnName: "" },
-    ]);
-    setTitle("");
-    setEditBoard({});
-    closeBoardModal();
   }
 
   return (
@@ -140,8 +142,14 @@ export default function BoardModal() {
           className="w-full border-[1px] rounded-md dark:border-grey dark:bg-magnumGrey dark:text-light p-1 pl-3 mt-3"
           placeholder="eg. Web Design"
           value={title}
-          onChange={(e) => changeHandler(e)}
+          onChange={changeHandler}
+          onBlur={blurHandler}
         />
+        {titleError && (
+          <p className="py-2 text-orange italic">
+            The title can&apos;t be empty
+          </p>
+        )}
       </div>
       <div className="mb-6">
         <label className="block text-platinum">Columns</label>

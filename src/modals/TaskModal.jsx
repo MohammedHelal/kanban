@@ -37,6 +37,10 @@ export default function TaskModal() {
       task_id: editTask["task_id"] || "",
     },
   ]);
+  const [errors, setErrors] = useState({
+    title: false,
+    subtasks: false,
+  });
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -62,6 +66,24 @@ export default function TaskModal() {
     let val = e.target.value;
 
     if (inputId === "title") {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          title: false,
+        };
+      });
+    }
+
+    if (inputId != "title" && inputId != "description" && inputId != "status") {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          subtasks: false,
+        };
+      });
+    }
+
+    if (inputId === "title") {
       setTitle(val);
     } else if (inputId === "description") {
       setDescription(val);
@@ -79,60 +101,112 @@ export default function TaskModal() {
     }
   }
 
+  function blurHandler(event) {
+    let inputId = event.target.id;
+
+    if (inputId === "title" && title === "") {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          title: true,
+        };
+      });
+    }
+
+    if (inputId != "title" && inputId != "description" && inputId != "status") {
+      const filteredSubtasks = subtaskState.filter(
+        (subtask) => subtask["subtask_title"] !== ""
+      );
+      if (filteredSubtasks.length <= 0) {
+        setErrors((prevState) => {
+          return {
+            ...prevState,
+            subtasks: true,
+          };
+        });
+      }
+    }
+  }
+
   async function submitHandler(e) {
     e.preventDefault();
 
-    const columnId = status
-      ? boardColumns.filter((column) => column["column_name"] === status)[0][
-          "column_id"
-        ]
-      : Object.keys(editTask).length <= 0
-      ? boardColumns[0]["column_id"]
-      : editTask["column_id"];
+    const filteredSubtasks = subtaskState.filter(
+      (subtask) => subtask["subtask_title"] !== ""
+    );
+    console.log(filteredSubtasks);
 
-    let task = {
-      title: title,
-      description: description,
-      subtasks: subtaskState,
-      columnId: columnId,
-    };
-
-    if (Object.keys(editTask).length <= 0) {
-      createTask(task, currentBoard);
-    } else {
-      let completeNo = 0;
-      for (let i = 0; i < task.subtasks.length; i++) {
-        if (task.subtasks[i].status === "done") completeNo++;
-      }
-      task.completeNo = completeNo;
-      task.id = editTask["task_id"];
-      updateTask(task);
+    if (title === "") {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          title: true,
+        };
+      });
     }
 
-    let taskData = await fetchTasksData(currentBoard);
-    setTasks(taskData);
+    if (filteredSubtasks.length <= 0) {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          subtasks: true,
+        };
+      });
+    }
 
-    setTitle("");
-    setDescription("");
-    setSubtaskState([
-      {
-        subtask_id: 1,
-        subtask_title: "",
-        is_completed: false,
-        task_id: editTask["task_id"] || "",
-      },
-      {
-        subtask_id: 2,
-        subtask_title: "",
-        is_completed: false,
-        task_id: editTask["task_id"] || "",
-      },
-    ]);
+    if (title !== "" && filteredSubtasks.length > 0) {
+      const columnId = status
+        ? boardColumns.filter((column) => column["column_name"] === status)[0][
+            "column_id"
+          ]
+        : Object.keys(editTask).length <= 0
+        ? boardColumns[0]["column_id"]
+        : editTask["column_id"];
 
-    setStatus("");
-    setEditTask({});
-    closeTaskModal();
-    closeTaskInfoModal();
+      let task = {
+        title: title,
+        description: description,
+        subtasks: filteredSubtasks,
+        columnId: columnId,
+      };
+
+      if (Object.keys(editTask).length <= 0) {
+        createTask(task, currentBoard);
+      } else {
+        let completeNo = 0;
+        for (let i = 0; i < task.subtasks.length; i++) {
+          if (task.subtasks[i].status === "done") completeNo++;
+        }
+        task.completeNo = completeNo;
+        task.id = editTask["task_id"];
+        updateTask(task);
+      }
+
+      let taskData = await fetchTasksData(currentBoard);
+      setTasks(taskData);
+
+      setTitle("");
+      setDescription("");
+      setSubtaskState([
+        {
+          subtask_id: 1,
+          subtask_title: "",
+          is_completed: false,
+          task_id: editTask["task_id"] || "",
+        },
+        {
+          subtask_id: 2,
+          subtask_title: "",
+          is_completed: false,
+          task_id: editTask["task_id"] || "",
+        },
+      ]);
+
+      setStatus("");
+      setEditTask({});
+      closeTaskModal();
+      closeTaskInfoModal();
+    }
   }
 
   return (
@@ -176,7 +250,13 @@ export default function TaskModal() {
           placeholder="eg. Take Coffee Break"
           value={title}
           onChange={changeHandler}
+          onBlur={blurHandler}
         />
+        {errors.title && (
+          <p className="py-2 text-orange italic">
+            The title can&apos;t be empty
+          </p>
+        )}
       </fieldset>
       <fieldset className="my-6">
         <label htmlFor="description" className="block text-platinum">
@@ -215,6 +295,7 @@ export default function TaskModal() {
                   } p-1 pl-3 rounded-l-lg dark:bg-magnumGrey dark:text-light`}
                   value={input["subtask_title"]}
                   onChange={(e) => changeHandler(e, input["subtask_id"])}
+                  onBlur={blurHandler}
                 />
                 <i
                   className="fa-solid fa-x py-3 pr-4 pl-3 -ml-0.5 dark:bg-magnumGrey border-[1px] dark:border-grey rounded-r-lg hover:border-orange text-platinum hover:bg-orange hover:text-white cursor-pointer"
@@ -244,6 +325,11 @@ export default function TaskModal() {
             );
           }
         })}
+        {errors.subtasks && (
+          <p className="py-2 text-orange italic">
+            You must add at least one subtask.
+          </p>
+        )}
         <button
           className="btn-secondary mt-6 ml-auto block w-full"
           onClick={() => {
