@@ -131,7 +131,9 @@ export default function BoardModal() {
       >
         <i className="board-close fa-solid fa-x p-3 pr-4 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
-      <h2 className="mt-0 mb-12 dark:text-white">Add New Board</h2>
+      <h2 className="mt-0 mb-12 dark:text-white">
+        {editBoard.board ? "Edit Board" : "Add New Board"}
+      </h2>
       <div className="mb-6">
         <label htmlFor="title" className="block text-platinum">
           Title

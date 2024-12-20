@@ -239,7 +239,7 @@ export default function TaskModal() {
         <i className="task-close fa-solid fa-x p-3 border-0 text-orange hover:bg-orange hover:text-white cursor-pointer"></i>
       </button>
       <h2 className="mt-0 mb-8 dark:text-light">
-        {Object.keys(editTask).length <= 0 ? "Create new task" : "Edit task"}
+        {Object.keys(editTask).length <= 0 ? "Add New Task" : "Edit task"}
       </h2>
       <fieldset className="my-6">
         <label htmlFor="title" className="block text-platinum">
@@ -375,9 +375,7 @@ export default function TaskModal() {
         </select>
       </fieldset>
       <button className="btn-primary w-full mt-6" type="submit">
-        {Object.keys(editTask).length <= 0
-          ? "Create new task"
-          : "Save task changes"}
+        {Object.keys(editTask).length <= 0 ? "Create New Task" : "Save Changes"}
       </button>
     </form>
   );
