@@ -2,8 +2,6 @@
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 
-
-
 export async function createBoard(board) {
   const title = board.title;
   const columns = board.columns;
@@ -17,7 +15,11 @@ export async function createBoard(board) {
       `;
       }
     }
+
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create board.", error);
@@ -52,7 +54,11 @@ export async function updateBoard(board) {
         `;
       }
     }
+
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create board.", error);
@@ -76,6 +82,9 @@ export async function deleteBoard(boardName, columns, tasks) {
     console.log("Board deletion disabled for now!");
 
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete board.", error);
@@ -101,7 +110,11 @@ export async function createTask(task, boardName) {
         `;
       }
     }
+
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create task.", error);
@@ -139,7 +152,11 @@ export async function updateTask(task) {
         `;
       }
     }
+
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task", error);
@@ -161,7 +178,11 @@ export async function changeSubtaskStatus(subtaskId, subtaskStatus, taskId) {
     }
 
     //no_of_completed_subtasks
+
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update subtask status", error);
@@ -172,7 +193,11 @@ export async function changetaskColumn(columnId, taskId) {
   try {
     await sql`
     UPDATE tasks SET column_id=${columnId} WHERE task_id=${taskId}`;
+
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task column", error);
@@ -188,6 +213,9 @@ export async function deleteTask(taskId) {
     console.log("Task deletion disabled for now!");
 
     revalidatePath("/");
+    revalidatePath("/", "layout");
+    //revalidatePath("/main");
+    //revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete task", error);
