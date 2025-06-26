@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BoardTaskContext } from "../store/board-task-context";
 import { ModalContext } from "../store/modal-context";
@@ -16,6 +16,19 @@ function DeleteBoardModal() {
   const { closeDeleteBoardModal } = useContext(ModalContext);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    function closeDeleteBoardModalFn(event) {
+      if (event.key === "Escape" || event.key === "Esc") {
+        closeDeleteBoardModal();
+      }
+    }
+    window.addEventListener("keydown", closeDeleteBoardModalFn, false);
+
+    return () => {
+      window.removeEventListener("keydown", closeDeleteBoardModalFn, false);
+    };
+  });
 
   async function boardDeletionHandler() {
     setLoading(true);

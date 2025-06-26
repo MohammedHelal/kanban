@@ -1,4 +1,6 @@
 import { sql } from "@vercel/postgres";
+import { saltAndHashPassword } from "../utils/password";
+import { hash } from "bcryptjs";
 
 export async function fetchBoardsData() {
   try {
@@ -55,5 +57,43 @@ export async function fetchSubTaskData(taskId) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch subtask info.");
+  }
+}
+
+export async function fetchUsersData() {
+  try {
+    const user = await sql`SELECT * FROM users`;
+
+    return user.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch users info.");
+  }
+}
+
+export async function authenticateUser(email, pwd) {
+  try {
+    const userArray = await sql`SELECT * FROM users WHERE email=${email}`;
+    let user;
+
+    if (userArray.rows.length > 0) {
+      for (let i = 0; i < userArray.rows.length; i++) {
+        if (userArray.rows[i].salt) {
+          user = userArray.rows[i];
+          const salt = user.salt;
+          const hashedPassword = await hash(pwd, salt);
+
+          if (user.email === email && user.password === hashedPassword) {
+            return user;
+          } else {
+            throw new Error("Password not correct");
+          }
+        }
+      }
+    }
+
+    throw new Error("User not found!");
+  } catch (error) {
+    console.error("Database Error:", error);
   }
 }

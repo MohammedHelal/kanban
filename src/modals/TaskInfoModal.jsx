@@ -53,6 +53,20 @@ export default function TaskInfoModal() {
     }
   }, [boardColumns, task, subtasks]);
 
+  useEffect(() => {
+    function closeTaskInfoModalFn(event) {
+      if (event.key === "Escape" || event.key === "Esc") {
+        closeTaskInfoModal();
+      }
+    }
+
+    window.addEventListener("keydown", closeTaskInfoModalFn, false);
+
+    return () => {
+      window.removeEventListener("keydown", closeTaskInfoModalFn, false);
+    };
+  });
+
   async function changeColumn(e, taskId) {
     const value = e.target.value;
     const columnId = boardColumns.find(

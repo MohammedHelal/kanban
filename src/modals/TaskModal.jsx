@@ -61,6 +61,20 @@ export default function TaskModal() {
     }
   }, [editTask, subtasks]);
 
+  useEffect(() => {
+    function closeTaskModalFn(event) {
+      if (event.key === "Escape" || event.key === "Esc") {
+        closeTaskModal();
+      }
+    }
+
+    window.addEventListener("keydown", closeTaskModalFn, false);
+
+    return () => {
+      window.removeEventListener("keydown", closeTaskModalFn, false);
+    };
+  });
+
   function changeHandler(e, id) {
     let inputId = e.target.id;
     let val = e.target.value;

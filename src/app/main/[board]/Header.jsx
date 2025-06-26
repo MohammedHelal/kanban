@@ -5,9 +5,6 @@ import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import { fetchABoardsDetails } from "@/src/lib/server-actions";
 import more from "@/src/assets/icon-vertical-ellipsis.svg";
-import logoLight from "@/src/assets/logo-light.svg";
-import logoDark from "@/src/assets/logo-dark.svg";
-import logoMobile from "@/src/assets/logo-mobile.svg";
 import Logo from "@/src/ui/Logo";
 import cross from "@/src/assets/icon-cross.svg";
 

@@ -1,17 +1,7 @@
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
-
-import SignIn from "@/src/auth/SignIn";
+import Register from "@/src/auth/Register";
 import office from "@/src/assets/office-workers-gettyimages.jpg";
 
-export default async function SignInPage() {
-  const session = await auth();
-
-  if (session?.user) {
-    console.log("logged in!");
-    redirect("/main");
-  }
-
+export default async function RegisterPage() {
   return (
     <div className="relative w-screen h-screen flex items-center justify-center overflow-hidden">
       <div className="rounded-bottom flex justify-center absolute top-0 -left-[250px] -right-[250px] h-[55%] overflow-hidden -z-10">
@@ -24,7 +14,7 @@ export default async function SignInPage() {
           }}
         />
       </div>
-      <SignIn />
+      <Register />
     </div>
   );
 }

@@ -93,6 +93,15 @@ h4 {
   text-wrap: wrap;
 }
 
+.rounded-bottom {
+  border-bottom-left-radius: 150% 500px;
+  border-bottom-right-radius: 150% 500px;
+}
+
+/*office-img {
+  box-shadow: 0 0 8px 8px white inset;
+}*/
+
 .btn-primary {
   border: 0;
   font-weight: 700;

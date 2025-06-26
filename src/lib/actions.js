@@ -1,6 +1,43 @@
 "use server";
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { saltAndHashPassword } from "../utils/password";
+
+export async function createUser(name, email, password) {
+  const saltAndHash = await saltAndHashPassword(password);
+  console.log(password, saltAndHash.hashedPassword, saltAndHash.salt);
+
+  try {
+    let user = await sql`SELECT * FROM users WHERE email=${email}`;
+    user = user.rows[0];
+    console.log(user);
+
+    if (!user) {
+      await sql`
+        INSERT INTO users (name, email, password, salt)
+        VALUES (${name}, ${email}, ${saltAndHash.hashedPassword}, ${saltAndHash.salt})
+      `;
+    } else if (user.password) {
+      throw new Error("User already exists");
+    } else {
+      await sql`
+          UPDATE users
+          SET password=${saltAndHash.hashedPassword},
+              salt=${saltAndHash.salt}
+          WHERE email=${email}
+        `;
+    }
+
+    revalidatePath("/");
+    revalidatePath("/", "layout");
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create user.", error);
+  }
+
+  redirect("/");
+}
 
 export async function createBoard(board) {
   const title = board.title;
@@ -18,15 +55,14 @@ export async function createBoard(board) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create board.", error);
   }
 }
 
-//currently in progress of writing code for updateBoard func
 export async function updateBoard(board) {
   const title = board.title;
   const columns = board.columns;
@@ -57,8 +93,8 @@ export async function updateBoard(board) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create board.", error);
@@ -83,8 +119,8 @@ export async function deleteBoard(boardName, columns, tasks) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete board.", error);
@@ -113,8 +149,8 @@ export async function createTask(task, boardName) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create task.", error);
@@ -155,8 +191,8 @@ export async function updateTask(task) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task", error);
@@ -181,8 +217,8 @@ export async function changeSubtaskStatus(subtaskId, subtaskStatus, taskId) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update subtask status", error);
@@ -196,8 +232,8 @@ export async function changetaskColumn(columnId, taskId) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update task column", error);
@@ -214,8 +250,8 @@ export async function deleteTask(taskId) {
 
     revalidatePath("/");
     revalidatePath("/", "layout");
-    //revalidatePath("/main");
-    //revalidatePath("/main", "layout");
+    revalidatePath("/main");
+    revalidatePath("/main", "layout");
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete task", error);

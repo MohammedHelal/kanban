@@ -4,25 +4,28 @@ import { useState, useEffect, useContext } from "react";
 import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import { SidebarContext } from "@/src/store/sidebar-context";
+import { UserContext } from "@/src/store/user-context";
 import { fetchABoardsDetails, fetchTasksData } from "@/src/lib/server-actions";
+import profile from "@/src/assets/profile-user.png";
 
+import Image from "next/image";
 import Link from "next/link";
 
-import PropTypes from "prop-types";
-
-function Sidebar({ boardData }) {
-  const { openBoardModal } = useContext(ModalContext);
+function Sidebar({ boardData, user }) {
+  const { openBoardModal, openUserProfileModal } = useContext(ModalContext);
   const {
     currentBoard,
     setCurrentBoard,
     setBoardColumns,
     setTasks,
-    loading,
     setLoading,
   } = useContext(BoardTaskContext);
   const { sidebar, hideSidebar, showSidebar } = useContext(SidebarContext);
+  const { setUser } = useContext(UserContext);
+
   const [boards, setBoards] = useState([]);
   const [mobileSidebarHide, setMobileSidebarHide] = useState(false);
+  const [imageSrc, setImageSrc] = useState(profile);
 
   useEffect(() => {
     if (boardData) {
@@ -38,12 +41,28 @@ function Sidebar({ boardData }) {
       }
       setBoards(arr);
     }
-  }, [boardData]);
+  }, [boardData, user, setUser]);
+
+  useEffect(() => {
+    if (Object.keys(user).length > 0) {
+      setUser(user);
+
+      if (user.image) {
+        setImageSrc(user.image);
+      }
+    }
+  }, [user, setUser]);
 
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 600px)").matches;
-    if (mobileSidebarHide && isMobile) hideSidebar();
-  }, [hideSidebar, mobileSidebarHide]);
+    if (mobileSidebarHide && isMobile) {
+      hideSidebar();
+    }
+  });
+
+  function addDefaultImg() {
+    setImageSrc(profile);
+  }
 
   return (
     <>
@@ -76,7 +95,7 @@ function Sidebar({ boardData }) {
             {boards.map((boardName, i) => (
               <div key={i} className="flex items-center mb-1">
                 <Link
-                  href={`/${boardName.replace(/\s+/g, "-").toLowerCase()}`}
+                  href={`/main/${boardName.replace(/\s+/g, "-").toLowerCase()}`}
                   onClick={async () => {
                     setLoading(true);
                     setMobileSidebarHide(true);
@@ -94,7 +113,7 @@ function Sidebar({ boardData }) {
                     currentBoard === boardName
                       ? "bg-darkerPurple text-light"
                       : "text-darkPurple dark:text-platinum hover:bg-darkPurple hover:text-light"
-                  }  block w-[215px] py-2 pl-6 -ml-6 flex items-center`}
+                  }  block w-[215px] py-2 pl-6 -ml-6 flex items-center cursor-pointer`}
                 >
                   <svg
                     width="16"
@@ -139,6 +158,25 @@ function Sidebar({ boardData }) {
           >
             <i className="fa-regular fa-eye-slash mr-2"></i> Hide sidebar
           </button>
+          <div
+            className="flex items-center justify-between bg-greyBlue dark:bg-grey  hover:bg-magnumGrey hover:text-white border-0 rounded-full px-[5px] mt-[15px] cursor-pointer"
+            onClick={openUserProfileModal}
+          >
+            {
+              <Image
+                src={imageSrc}
+                alt="user image"
+                unoptimized={true}
+                onError={addDefaultImg}
+                width="25"
+                height="25"
+                className="rounded-full border-0"
+              />
+            }
+            <h4 className="truncate no-wrap w-[150px] my-[10px]">
+              {user.name}
+            </h4>
+          </div>
         </div>
         {!sidebar && (
           <button
@@ -162,10 +200,8 @@ function Sidebar({ boardData }) {
   );
 }
 
-Sidebar.propTypes = {
-  sidebar: PropTypes.bool.isRequired,
-  hideSidebar: PropTypes.func.isRequired,
-  showSidebar: PropTypes.func.isRequired,
-};
-
 export default Sidebar;
+
+/*              
+                
+*/

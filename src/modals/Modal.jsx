@@ -26,7 +26,7 @@ function Modal({ children, open, className = "" }) {
     ? createPortal(
         <dialog
           ref={dialog}
-          className={`modal ${className} bg-white dark:bg-darkGrey backdrop:bg-black/50 backdrop:backdrop-blur-sm`}
+          className={`modal ${className} bg-white dark:bg-grey backdrop:bg-black/50 backdrop:backdrop-blur-sm`}
         >
           {children}
         </dialog>,

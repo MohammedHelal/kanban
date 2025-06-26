@@ -20,7 +20,7 @@ function Logo() {
           </g>
         </svg>
       </div>
-      <div className="md:hidden flex items-center px-[20px] h-full border-r-[1px] border-greyBlue">
+      <div className="md:hidden flex items-center px-[20px] h-full border-r-[1px] border-greyBlue dark:border-grey">
         <Image src={logoMobile} className="" alt="Logo" priority />
       </div>
     </>

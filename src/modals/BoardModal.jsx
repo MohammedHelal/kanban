@@ -50,6 +50,19 @@ export default function BoardModal() {
     }
   }, [editBoard]);
 
+  useEffect(() => {
+    function closeBoardModalFn(event) {
+      if (event.key === "Escape" || event.key === "Esc") {
+        closeBoardModal();
+      }
+    }
+    window.addEventListener("keydown", closeBoardModalFn, false);
+
+    return () => {
+      window.removeEventListener("keydown", closeBoardModalFn, false);
+    };
+  });
+
   function changeHandler(e, id) {
     let inputId = e.target.id;
     let val = e.target.value;

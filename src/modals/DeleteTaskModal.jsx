@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { BoardTaskContext } from "../store/board-task-context";
 import { ModalContext } from "../store/modal-context";
 import { deleteTask } from "../lib/actions";
@@ -6,8 +6,22 @@ import { fetchTasksData } from "../lib/server-actions";
 
 function DeleteTaskModal() {
   const { currentBoard, currentTask, setTasks } = useContext(BoardTaskContext);
-  const { closeTaskInfoModal, closeDeleteTaskModal } = useContext(ModalContext);
+  const { closeDeleteTaskModal } = useContext(ModalContext);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    function closeDeleteTaskModalFn(event) {
+      if (event.key === "Escape" || event.key === "Esc") {
+        closeDeleteTaskModal();
+      }
+    }
+
+    window.addEventListener("keydown", closeDeleteTaskModalFn, false);
+
+    return () => {
+      window.removeEventListener("keydown", closeDeleteTaskModalFn, false);
+    };
+  });
 
   async function taskDeletionHandler() {
     setLoading(true);
@@ -17,8 +31,6 @@ function DeleteTaskModal() {
     setTasks(tasks);
 
     setLoading(false);
-
-    closeTaskInfoModal();
     closeDeleteTaskModal();
   }
 

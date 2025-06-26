@@ -24,6 +24,10 @@ export const ModalContext = createContext({
   taskInfoModal: false,
   openTaskInfoModal: () => {},
   closeTaskInfoModal: () => {},
+  //user profile modal
+  userProfileModal: false,
+  openUserProfileModal: () => {},
+  closeUserProfileModal: () => {},
 });
 
 export default function ModalContextProvider({ children }) {
@@ -33,6 +37,7 @@ export default function ModalContextProvider({ children }) {
   const [taskModal, setTaskModal] = useState(false);
   const [deleteTaskModal, setDeleteTaskModal] = useState(false);
   const [taskInfoModal, setTaskInfoModal] = useState(false);
+  const [userProfileModal, setUserProfile] = useState(false);
 
   const openBoardModal = () => setBoardModal(true);
   const closeBoardModal = () => setBoardModal(false);
@@ -48,6 +53,11 @@ export default function ModalContextProvider({ children }) {
 
   const openTaskInfoModal = () => setTaskInfoModal(true);
   const closeTaskInfoModal = () => setTaskInfoModal(false);
+
+  const openUserProfileModal = () => {
+    setUserProfile(true);
+  };
+  const closeUserProfileModal = () => setUserProfile(false);
 
   const modalCtx = {
     //board modals
@@ -70,6 +80,10 @@ export default function ModalContextProvider({ children }) {
     taskInfoModal: taskInfoModal,
     openTaskInfoModal: openTaskInfoModal,
     closeTaskInfoModal: closeTaskInfoModal,
+    //user profile modal
+    userProfileModal: userProfileModal,
+    openUserProfileModal: openUserProfileModal,
+    closeUserProfileModal: closeUserProfileModal,
   };
 
   return (

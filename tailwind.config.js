@@ -2,10 +2,12 @@
 export const content = [
   "./pages/**/*.{js,ts,jsx,tsx,mdx}",
   "./src/modals/**/*.{js,ts,jsx,tsx,mdx}",
+  "./src/auth/**/*.{js,ts,jsx,tsx,mdx}",
   "./src/ui/**/*.{js,ts,jsx,tsx,mdx}",
   "./src/store/**/*.{js,ts,jsx,tsx,mdx}",
   "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 ];
+
 export const theme = {
   extend: {
     backgroundImage: {
@@ -43,4 +45,5 @@ export const theme = {
     },
   },
 };
+
 export const plugins = [];

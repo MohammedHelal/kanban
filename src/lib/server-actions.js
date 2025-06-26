@@ -6,6 +6,8 @@ import {
   fetchTaskData,
   fetchTaskOfColumnData,
   fetchSubTaskData,
+  fetchUsersData,
+  authenticateUser,
 } from "./data";
 import { changeSubtaskStatus, changetaskColumn } from "./actions";
 
@@ -13,6 +15,20 @@ export async function fetchBoardData() {
   "use server";
 
   let data = await fetchBoardsData();
+  return data;
+}
+
+export async function fetchUserData() {
+  "use server";
+
+  let data = await fetchUsersData();
+  return data;
+}
+
+export async function authenticateUserData(email, pwd) {
+  "use server";
+
+  let data = await authenticateUser(email, pwd);
   return data;
 }
 
