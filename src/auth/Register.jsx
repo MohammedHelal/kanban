@@ -30,7 +30,6 @@ function Register() {
           const name = formData.get("name");
           const email = formData.get("email");
           const password = formData.get("password");
-          console.log(formData.get("name"));
 
           await createUser(name, email, password);
         }}

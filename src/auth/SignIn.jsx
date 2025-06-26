@@ -63,38 +63,49 @@ function SignIn() {
           Sign in
         </button>
       </form>
-      <Link
-        href="/register"
-        className="my-[15px] hover:text-darkPurple hover:underline"
-      >
-        Register, if you dont have an account
-      </Link>
+      <div className="my-[15px]">
+        <Link href="/register" className="text-darkPurple hover:underline">
+          Register, if you dont have an account
+        </Link>
+      </div>
       <div className="relative">
         <hr className="-mx-[20px] my-[15px] border-greyBlue" />
         <p className="absolute left-[calc(50%-20px)] -top-[13px] text-platinum px-[15px] bg-white">
           or
         </p>
       </div>
+      {/*<form
+        action={async (formData) => {
+          "use server";
+          await signIn("nodemailer", formData);
+        }}
+      >
+        <input
+          name="email"
+          type="email"
+          placeholder="Email..."
+          className="my-[5px] w-full border-[1px] rounded-md border-lightPurple p-1 pl-3"
+        />
+        <button
+          id="submitEmailBtn"
+          name="submitEmailBtn"
+          className="py-[10px] px-[25px] mt-[5px] text-white bg-darkPurple hover:bg-darkerPurple border-0 rounded-md w-full w-[calc(50% - 10px)]"
+        >
+          Sign in by email
+        </button>
+      </form>
+      <div className="relative">
+        <hr className="-mx-[20px] my-[15px] border-greyBlue" />
+        <p className="absolute left-[calc(50%-20px)] -top-[13px] text-platinum px-[15px] bg-white">
+          or
+        </p>
+      </div>*/}
       <form
         action={async () => {
           "use server";
           await signIn();
         }}
       >
-        <button
-          id="submitEmailBtn"
-          name="submitEmailBtn"
-          type="submit"
-          className="py-[10px] px-[25px] text-white bg-darkPurple hover:bg-darkerPurple border-0 rounded-md w-full w-[calc(50% - 10px)]"
-        >
-          Sign in by email
-        </button>
-        <div className="relative">
-          <hr className="-mx-[20px] my-[15px] border-greyBlue" />
-          <p className="absolute left-[calc(50%-20px)] -top-[13px] text-platinum px-[15px] bg-white">
-            or
-          </p>
-        </div>
         <div className="flex items-center justify-between">
           <button
             id="github"
