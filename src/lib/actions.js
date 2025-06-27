@@ -6,7 +6,6 @@ import { saltAndHashPassword } from "../utils/password";
 
 export async function createUser(name, email, password) {
   const saltAndHash = await saltAndHashPassword(password);
-  console.log(password, saltAndHash.hashedPassword, saltAndHash.salt);
 
   try {
     let user = await sql`SELECT * FROM users WHERE email=${email}`;

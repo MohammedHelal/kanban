@@ -29,26 +29,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth(() => {
           email: {},
           password: {},
         },
-        authorize: async (credentials) => {
-          let user = null;
+        authorize: async (credentials: { email: string; password: string }) => {
+          try {
+            let email = credentials.email.toLowerCase();
 
-          // logic to salt and hash password
-          //const pwHash = saltAndHashPassword(credentials.password);
+            let user = null;
+            // logic to verify if the user exists
+            user = await authenticateUserData(email, credentials.password);
 
-          // logic to verify if the user exists
-          user = await authenticateUserData(
-            credentials.email,
-            credentials.password
-          );
+            if (!user) {
+              throw new Error("user not found!");
+            }
 
-          if (!user) {
-            // No user found, so this is their first attempt to login
-            // Optionally, this is also the place you could do a user registration
-            // throw new Error("Invalid credentials.");
+            // return user object with their profile data
+            return user;
+          } catch (error) {
+            console.error("login failed, check email or password: ", error);
           }
-
-          // return user object with their profile data
-          return user;
         },
       }),
     ],

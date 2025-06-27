@@ -3,8 +3,14 @@ import Image from "next/image";
 import google from "@/src/assets/google.png";
 import github from "@/src/assets/github.png";
 import Link from "next/link";
+import CredentialSignIn from "./CredentialSignIn";
 
 function SignIn() {
+  async function adjSignIn(formData) {
+    "use server";
+
+    await signIn("credentials", formData);
+  }
   return (
     <div className="w-[350px] mt-[50px] py-[15px] px-[20px] bg-white border-0 shadow-xl rounded-lg">
       <svg
@@ -27,10 +33,16 @@ function SignIn() {
         </g>
       </svg>
       <hr className="-mx-[20px] my-[15px] border-greyBlue" />
+      <CredentialSignIn adjSignIn={adjSignIn} />
+      {/*
       <form
         action={async (formData) => {
           "use server";
-          await signIn("credentials", formData);
+          try {
+            await signIn("credentials", formData);
+          } catch (error) {
+            console.error(error);
+          }
         }}
       >
         <h2 className="mb-[15px] text-3xl text-darkPurple">Sign in</h2>
@@ -63,6 +75,7 @@ function SignIn() {
           Sign in
         </button>
       </form>
+      */}
       <div className="my-[15px]">
         <Link href="/register" className="text-darkPurple hover:underline">
           Register, if you dont have an account
