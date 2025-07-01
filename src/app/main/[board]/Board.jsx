@@ -204,7 +204,7 @@ export default function Board() {
               id={column["column_id"]}
               className={`${
                 dropping.id == column["column_id"] && dropping.isDropping
-                  ? "bg-lightPurple dark:bg-[#1b1c24]"
+                  ? "bg-darkGreyBlue dark:bg-[#1b1c24]"
                   : ""
               } w-[300px] px-[10px] rounded-md mr-6 shrink-0 text-center`}
               ref={(ele) => {
