@@ -93,14 +93,14 @@ export default function TaskInfoModal() {
     setTasks(tasks);
   }
 
-  async function taskDeletionHandler(taskId) {
+  /*async function taskDeletionHandler(taskId) {
     await deleteTask(taskId);
 
     const tasks = await fetchTasksData(currentBoard);
     setTasks(tasks);
 
     closeTaskInfoModal();
-  }
+  }*/
 
   return (
     <div className="relative md:min-w-[350px]">

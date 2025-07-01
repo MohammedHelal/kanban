@@ -1,13 +1,20 @@
 "use client";
 
 import BoardWrapper from "../BoardWrapper";
+import {
+  draggable,
+  dropTargetForElements,
+  monitorForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useCallback, useEffect, useRef } from "react";
 import { ModalContext } from "@/src/store/modal-context";
 import { BoardTaskContext } from "@/src/store/board-task-context";
 import {
   fetchSubTasksData,
   fetchABoardsDetails,
+  changeTasksColumn,
+  fetchTasksData,
 } from "@/src/lib/server-actions";
 
 export default function Board() {
@@ -18,9 +25,21 @@ export default function Board() {
     boardColumns,
     setCurrentTask,
     currentBoard,
+    setTasks,
     setEditBoard,
   } = useContext(BoardTaskContext);
   const [taskNumber, setTaskNumber] = useState({});
+  const tasksDnD = useRef(new Array());
+  const [dragging, setDragging] = useState({
+    id: null,
+    isDragging: false,
+  });
+
+  const columnsDnD = useRef(new Array());
+  const [dropping, setDropping] = useState({
+    id: null,
+    isDropping: false,
+  });
 
   useEffect(() => {
     tasks.map((task) => {
@@ -50,6 +69,124 @@ export default function Board() {
     });
   }, [taskNumber, tasks]);
 
+  //Pragmatic drag and drop code
+  //code for dragging a task
+  useEffect(() => {
+    if (tasksDnD.current.length > 0) {
+      const el = tasksDnD.current;
+
+      el.map((ele) => {
+        if (ele.draggable) {
+          return;
+        }
+
+        let arr = ele.id.split(",");
+        let tId = arr[0];
+        let columnId = arr[1];
+
+        return draggable({
+          element: ele,
+          getInitialData: () => ({ tId, columnId }),
+          onDragStart: () => {
+            setDragging((prevState) => {
+              return {
+                ...prevState,
+                id: tId,
+                isDragging: true,
+              };
+            });
+          },
+          onDrop: () => {
+            setDragging((prevState) => {
+              return {
+                ...prevState,
+                id: tId,
+                isDragging: false,
+              };
+            });
+          },
+        });
+      });
+    }
+  });
+
+  //code for dropping a task
+  useEffect(() => {
+    if (columnsDnD.current.length > 0) {
+      const el = columnsDnD.current;
+
+      el.map((ele) => {
+        if (ele.dataset.dropTargetForElement) return;
+
+        return dropTargetForElements({
+          element: ele,
+          canDrop: ({ source }) => source.data.columnId !== ele.id,
+          onDragEnter: () => {
+            setDropping((prevState) => {
+              return {
+                ...prevState,
+                id: ele.id,
+                isDropping: true,
+              };
+            });
+          },
+          onDragLeave: () => {
+            setDropping((prevState) => {
+              return {
+                ...prevState,
+                id: ele.id,
+                isDropping: false,
+              };
+            });
+          },
+          onDrop: () => {
+            setDropping((prevState) => {
+              return {
+                ...prevState,
+                id: ele.id,
+                isDropping: false,
+              };
+            });
+          },
+          getData: () => ({ columnId: ele.id }),
+        });
+      });
+    }
+  }, []);
+
+  //function for changing tasks column after drop
+  const changeColumn = useCallback(
+    async (columnId, taskId, task) => {
+      changeTasksColumn(columnId, taskId);
+
+      const tasks = await fetchTasksData(currentBoard);
+      setTasks(tasks);
+      setCurrentTask(task);
+    },
+    [currentBoard, setCurrentTask, setTasks]
+  );
+
+  useEffect(() => {
+    return monitorForElements({
+      onDrop({ source, location }) {
+        const destination = location.current.dropTargets[0];
+        if (!destination) {
+          // if dropped outside of any drop targets
+          return;
+        }
+
+        const destinationId = destination.data.columnId;
+        const taskId = source.data.tId;
+
+        const task = tasks.find((task) => task["task_id"] == taskId);
+
+        if (task !== undefined) {
+          changeColumn(destinationId, taskId, task);
+        }
+      },
+    });
+  }, [tasks, boardColumns, changeColumn]);
+
   const colorNo = [
     "bg-cyan-500",
     "bg-darkPurple",
@@ -64,7 +201,26 @@ export default function Board() {
           return (
             <div
               key={column["column_id"]}
-              className="w-[280px] mr-6 shrink-0 text-center"
+              id={column["column_id"]}
+              className={`${
+                dropping.id == column["column_id"] && dropping.isDropping
+                  ? "bg-greyBlue dark:bg-[#1b1c24]"
+                  : ""
+              } w-[300px] px-[10px] rounded-md mr-6 shrink-0 text-center`}
+              ref={(ele) => {
+                if (ele) {
+                  if (columnsDnD.current.length > 0) {
+                    const column = columnsDnD.current.find(
+                      (column) => column.id == ele.id
+                    );
+                    if (column === undefined) {
+                      columnsDnD.current.push(ele);
+                    }
+                  } else {
+                    columnsDnD.current.push(ele);
+                  }
+                }
+              }}
             >
               <div className="flex items-center">
                 <div
@@ -88,7 +244,12 @@ export default function Board() {
                     return (
                       <div
                         key={task["task_id"]}
-                        className="bg-white dark:bg-darkGrey w-full text-black dark:text-white hover:border-[1px] dark:hover:border-magnumGrey hover:border-platinum rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer"
+                        id={`${task["task_id"]},${task["column_id"]}`}
+                        className={`${
+                          dragging.id == task["task_id"] && dragging.isDragging
+                            ? "opacity-25"
+                            : ""
+                        } bg-white dark:bg-darkGrey w-full text-black dark:text-white hover:border-[1px] dark:hover:border-magnumGrey hover:border-platinum rounded-lg shadow-md py-3 px-6 my-3 cursor-pointer`}
                         onClick={async () => {
                           let subtasks = await fetchSubTasksData(
                             task["task_id"]
@@ -97,6 +258,34 @@ export default function Board() {
                           setCurrentTask(task);
                           setSubtasks(subtasks);
                           openTaskInfoModal();
+                        }}
+                        ref={(ele) => {
+                          if (ele) {
+                            if (tasksDnD.current.length > 0) {
+                              let taskId = ele.id.split(",")[0];
+                              let columnId = ele.id.split(",")[1];
+                              const task = tasksDnD.current.find(
+                                (task) => task.id.split(",")[0] == taskId
+                              );
+
+                              if (task === undefined) {
+                                tasksDnD.current.push(ele);
+                              } else if (
+                                task.id.split(",")[0] == taskId &&
+                                columnId != task.id.split(",")[1]
+                              ) {
+                                let arr = tasksDnD.current;
+                                let newArr = arr.filter(
+                                  (element) => element.id !== task.id
+                                );
+                                newArr.push(ele);
+
+                                tasksDnD.current = newArr;
+                              }
+                            } else {
+                              tasksDnD.current.push(ele);
+                            }
+                          }
                         }}
                       >
                         <h2 className="text-left mb-2 text-wrap">

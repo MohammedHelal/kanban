@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.7.4",
     "@auth/pg-adapter": "^1.7.4",
     "@types/pg": "^8.11.10",
     "@vercel/postgres": "^0.9.0",
