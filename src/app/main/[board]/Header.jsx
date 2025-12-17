@@ -24,7 +24,7 @@ function Header() {
       <div
         className={`w-full md:w-[calc(100vw-250px)] navbar m-trans p-6 flex items-center justify-between`}
       >
-        <h1 className="w-[50px] md:w-auto">{currentBoard}</h1>
+        <h1 className="w-[50px] md:w-auto md:max-w-[150px]">{currentBoard}</h1>
         <div className="relative flex justify-between items-center min-w-1/5">
           {currentBoard && (
             <>
