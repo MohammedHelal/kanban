@@ -154,6 +154,8 @@ export default function BoardModal() {
         <input
           id="title"
           name="title"
+          type="text"
+          pattern="[a-zA-Z0-9]+"
           className="w-full border-[1px] rounded-md dark:border-grey dark:bg-magnumGrey dark:text-light p-1 pl-3 mt-3"
           placeholder="eg. Web Design"
           value={title}
@@ -189,6 +191,8 @@ export default function BoardModal() {
                       ? "eg. Done"
                       : "Next Column"
                   }`}
+                  type="text"
+                  pattern="[a-zA-Z0-9]+"
                   className={`w-full border-[1px] rounded-l-lg  ${
                     columnDelete === `column${input.id}`
                       ? "border-orange"
