@@ -156,6 +156,7 @@ export default function BoardModal() {
           name="title"
           type="text"
           pattern="[a-zA-Z0-9]+"
+          title="Only letters and numbers allowed"
           className="w-full border-[1px] rounded-md dark:border-grey dark:bg-magnumGrey dark:text-light p-1 pl-3 mt-3"
           placeholder="eg. Web Design"
           value={title}
@@ -193,6 +194,7 @@ export default function BoardModal() {
                   }`}
                   type="text"
                   pattern="[a-zA-Z0-9]+"
+                  title="Only letters and numbers allowed"
                   className={`w-full border-[1px] rounded-l-lg  ${
                     columnDelete === `column${input.id}`
                       ? "border-orange"
